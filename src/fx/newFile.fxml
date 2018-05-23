@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="222.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.Controller">
+   <children>
+      <Label layoutX="80.0" layoutY="61.0" text="Name of New File" />
+      <TextField layoutX="226.0" layoutY="57.0" />
+      <Label layoutX="236.0" layoutY="23.0" text="New File" />
+      <Button layoutX="385.0" layoutY="157.0" mnemonicParsing="false" text="Create Fields" />
+      <Label layoutX="80.0" layoutY="96.0" text="Number of Fields" />
+      <TextField layoutX="226.0" layoutY="101.0" />
+   </children>
+</Pane>

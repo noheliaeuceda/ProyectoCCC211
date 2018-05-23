@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.Controller">
+   <left>
+      <VBox prefHeight="467.0" prefWidth="159.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Add person:" />
+            <Region layoutX="15.0" layoutY="71.0">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Label text="ID:" />
+            <TextField fx:id="textId" promptText="0501198012345" />
+            <Region>
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Label text="Name:" />
+            <TextField fx:id="textName" promptText="Javier" />
+            <Region layoutX="15.0" layoutY="190.0">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Label text="Surname:" />
+            <TextField fx:id="textSurname" promptText="Cano" />
+            <Region layoutX="15.0" layoutY="106.0">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Label text="Address:" />
+            <TextField fx:id="textAddress" promptText="Col. Kennedy" />
+            <Region layoutX="15.0" layoutY="54.0">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Label text="Phone number:" />
+            <TextField fx:id="textPhone" promptText="50433900000" />
+            <Region layoutX="15.0" layoutY="284.0">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Label text="Gender:" />
+            <TextField fx:id="textGender" promptText="Masculino" />
+            <Region layoutX="15.0" layoutY="54.0">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Label text="Race:" />
+            <TextField fx:id="textRace" promptText="Mestizo" />
+            <Region layoutX="15.0" layoutY="314.0">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Button fx:id="buttonAdd" mnemonicParsing="false" onAction="#buttonAddClicked" text="hola" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <BorderPane.margin>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
+         </padding></VBox>
+   </left>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Registry:" />
+            <Region>
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <ListView fx:id="listMain" />
+            <Region>
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Region>
+            <Button fx:id="buttonDelete" mnemonicParsing="false" onAction="#buttonDeleteClicked" text="Delete selected" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </VBox>
+   </center>
+   <top>
+      <MenuBar prefHeight="22.0" prefWidth="1000.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
