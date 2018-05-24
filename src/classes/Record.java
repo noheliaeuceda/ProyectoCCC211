@@ -13,8 +13,11 @@ public class Record {
         fields = new ArrayList<>();
     }
 
-    public void add(Field field, String content) throws LongLengthException {
-        field.setContent(content);
+    public Record(ArrayList<Field> fields) {
+        this.fields = fields;
+    }
+
+    public void add(Field field){
         fields.add(field);
     }
 

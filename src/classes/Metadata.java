@@ -3,7 +3,6 @@ package classes;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Metadata {
 
@@ -15,6 +14,7 @@ public class Metadata {
     // is primary key
 
     private File file;
+    private int fieldCount;
     private ArrayList<Field> fieldsData;
     private int length;
     private String deleted;
@@ -27,8 +27,9 @@ public class Metadata {
         loadMetadata();
     }
 
-    public Metadata(String filename, Field... fields) {
+    public Metadata(String filename, int fieldCount, ArrayList<Field> fields) {
         file = new File(filename);
+        this.fieldCount = fieldCount;
         fieldsData = new ArrayList<>();
         length = 3;
         deleted = String.format("%" + (length - 2) + "s", "\n").replace(' ', '*');
@@ -36,41 +37,44 @@ public class Metadata {
     }
 
     private void loadMetadata() {
-        RandomAccessFile raFile;
-        int fieldCount, tSize;
-        boolean tPrimaryKey;
-        String tType, tName;
-        try {
-            raFile = new RandomAccessFile(file.getName(), "rw");
-            fieldCount = Integer.valueOf(raFile.readUTF());
+        if (file.exists()) {
+            RandomAccessFile raFile;
+            int tSize;
+            boolean tPrimaryKey;
+            String tType, tName;
+            try {
+                raFile = new RandomAccessFile(file.getName(), "r");
+                fieldCount = Integer.valueOf(raFile.readUTF().trim());
 
-            for (int i = 0; i < fieldCount; i++) {
-                tSize = Integer.valueOf(raFile.readUTF().trim());
-                tType = raFile.readUTF().trim();
-                tName = raFile.readUTF().trim();
-                tPrimaryKey = Boolean.valueOf(raFile.readUTF().trim());
-                addField(new Field(tSize, tType, tName, tPrimaryKey));
+                for (int i = 0; i < fieldCount; i++) {
+                    tSize = Integer.valueOf(raFile.readUTF().trim());
+                    tType = raFile.readUTF().trim();
+                    tName = raFile.readUTF().trim();
+                    tPrimaryKey = Boolean.valueOf(raFile.readUTF().trim());
+                    addField(new Field(tSize, tType, tName, tPrimaryKey));
+                }
+
+                raFile.close();
+            } catch (Exception e) {
+                System.out.println("Error reading from file " + e.getMessage());
+                e.printStackTrace();
             }
-
-            raFile.close();
-        } catch (Exception e) {
-            System.out.println("Error writing to file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
-    private void createMetadata(Field... fields) {
+    private void createMetadata(ArrayList<Field> fields) {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
-            raFile.writeUTF(Integer.toString(fields.length) + '\n');
+            // TODO truncar
+            raFile.writeUTF(Integer.toString(fields.size()) + '\n');
 
-            for (int i = 0; i < fields.length; i++) {
-                raFile.writeUTF(Integer.toString(fields[i].size));
-                raFile.writeUTF(fields[i].type);
-                raFile.writeUTF(fields[i].name);
-                raFile.writeUTF(Boolean.toString(fields[i].primaryKey) + '\n');
-                addField(fields[i]);
+            for (Field f : fields){
+                raFile.writeUTF(Integer.toString(f.size));
+                raFile.writeUTF(f.type);
+                raFile.writeUTF(f.name);
+                raFile.writeUTF(Boolean.toString(f.primaryKey) + '\n');
+                addField(f);
             }
 
             raFile.close();
@@ -92,6 +96,21 @@ public class Metadata {
 
     public String getDeleted() {
         return deleted;
+    }
+
+    public int getFieldCount(){
+        return fieldCount;
+    }
+
+    public boolean exists(){
+        return file.exists();
+    }
+
+    public Field at(int pos) {
+        if (pos < 0 || pos >= fieldCount)
+            return null;
+        else
+            return fieldsData.get(pos);
     }
 
     public ArrayList<Field> getFieldsData(){

@@ -5,29 +5,31 @@ import javafx.scene.control.ListView;
 import java.io.EOFException;
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 public class Registry {
 
     private File file;
+    private String filename;
     private ListView fxList;
     private AvailList aList;
     private Metadata metadata;
 
     public Registry(String filename, ListView fxList) {
         aList = new AvailList();
+        this.filename = filename;
         this.fxList = fxList;
         this.file = new File(filename + ".txt");
-        // TODO buscar el nombre del archivo de metadata
         metadata = new Metadata(filename + "Metadata.txt");
         load();
     }
 
-    public void changeMetadata(Field... fields){
-        metadata = new Metadata(file.getName() + "Metadata.txt", fields);
+    public void changeMetadata(ArrayList<Field> fields, int fieldCount){
+        metadata = new Metadata(filename + "Metadata.txt", fieldCount, fields);
     }
 
-    public void add(String... fields) {
-        Record record = parse(fields);
+    public void add(ArrayList<Field> fields) {
+        Record record = new Record(fields);
         boolean pkRepeated = false;
         Node temp = aList.first;
         while (temp != null) {
@@ -43,6 +45,7 @@ public class Registry {
             if (pos == -1) {
                 append(record);
                 fxList.getItems().add(record);
+                fxList.refresh();
             } else {
                 rewrite(record, pos);
                 fxList.getItems().set(pos, record);
@@ -70,8 +73,10 @@ public class Registry {
                 System.out.println("Error reading from file " + e.getMessage());
                 e.printStackTrace();
             }
-            aList.init = false;
+//             TODO fix
+//            aList.init = false;
         }
+        aList.init = false;
     }
 
     public void translate(String data){
@@ -91,8 +96,8 @@ public class Registry {
             tempRecord = new Record();
             pos = 0;
             for (Field f : metadata.getFieldsData()) {
-                tempField = new Field(f);
-                tempRecord.add(tempField, data.substring(pos, pos + f.size));
+                tempField = new Field(f, data.substring(pos, pos + f.size));
+                tempRecord.add(tempField);
                 pos += f.size;
             }
             aList.add(tempRecord);
@@ -100,27 +105,6 @@ public class Registry {
         } catch (LongLengthException e){
             System.out.println("Error creating record! " + e.getMessage());
         }
-    }
-
-    public Record parse(String... fields){
-        // TODO suponiendo que el orden en que son recibidos los argumentos es el mismo que el de la metadata
-        int pos = 0;
-        Record tempRecord = null;
-        Field tempField;
-        try {
-            tempRecord = new Record();
-            for (Field f : metadata.getFieldsData()){
-                tempField = new Field(f);
-                tempRecord.add(tempField, fields[pos]);
-                pos++;
-            }
-        } catch (LongLengthException e){
-            System.out.println("Error creating record! " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println(1);
-            e.printStackTrace();
-        }
-        return tempRecord;
     }
 
     public void append(Record record){
@@ -168,6 +152,18 @@ public class Registry {
             System.out.println("Error writing to file " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public int getFieldCount() {
+        return metadata.getFieldCount();
+    }
+
+    public Field at(int pos) {
+        return metadata.at(pos);
+    }
+
+    public boolean hasMetadata(){
+        return metadata.exists();
     }
 
     public void printAvailList(){

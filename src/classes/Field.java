@@ -16,12 +16,12 @@ public class Field {
         this.primaryKey = primaryKey;
     }
 
-    public Field(Field clone){
+    public Field(Field clone, String content) throws LongLengthException {
         this.size = clone.size;
         this.type = clone.type;
         this.name = clone.name;
         this.primaryKey = clone.primaryKey;
-        this.content = clone.getContent();
+        setContent(content);
     }
 
     public String getContent() {

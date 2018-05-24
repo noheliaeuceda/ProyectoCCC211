@@ -17,7 +17,7 @@ public class Main extends Application {
         primaryStage.setOnHidden(e -> close(controller));
 
         primaryStage.setTitle("Registry");
-        primaryStage.setScene(new Scene(root, 800, 430));
+        primaryStage.setScene(new Scene(root, 800, 524));
         primaryStage.show();
     }
 
