@@ -1,7 +1,6 @@
 package fx;
 
-import classes.LongLengthException;
-import classes.Person;
+import classes.Record;
 import classes.Registry;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
@@ -9,8 +8,6 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-//-  No es necesario que muestre la construccion del avail list (5% extra de la nota de tareas si lo hace)
 
 public class Controller implements Initializable {
 
@@ -23,44 +20,38 @@ public class Controller implements Initializable {
     public TextField textGender;
     public TextField textRace;
     public ListView listMain;
-    public ListView listAvail;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        registry = new Registry("db.txt", listMain, listAvail);
+        registry = new Registry("db", listMain);
     }
 
     public void buttonAddClicked(){
-        try {
-            Person tempPerson = new Person(
-                    textName.getText(),
-                    textSurname.getText(),
-                    textId.getText(),
-                    textAddress.getText(),
-                    textPhone.getText(),
-                    textGender.getText(),
-                    textRace.getText()
-            );
-            clearFields();
-            registry.addPerson(tempPerson);
-        } catch (LongLengthException e){
-            System.out.println("Error adding element " + e.getMessage());
-        }
+        registry.add(textId.getText(),
+                textName.getText(),
+                textSurname.getText(),
+                textAddress.getText(),
+                textPhone.getText(),
+                textGender.getText(),
+                textRace.getText());
+        clearFields();
     }
 
     public void buttonDeleteClicked(){
         int pos = listMain.getSelectionModel().getSelectedIndex();
-        Person selectedPerson = (Person) listMain.getSelectionModel().getSelectedItem();
-        if (selectedPerson != null) {
-            registry.removePerson(selectedPerson);
+        Record selectedRecord = (Record) listMain.getSelectionModel().getSelectedItem();
+        if (selectedRecord != null) {
+            registry.remove(selectedRecord);
             listMain.getItems().set(pos, null);
         }
     }
 
+    public void buttonPrintAListClicked() {
+        registry.printAvailList();
+    }
+
     public void close() {
         registry.update();
-        
-        
     }
 
     private void clearFields(){
@@ -71,9 +62,6 @@ public class Controller implements Initializable {
         textPhone.clear();
         textGender.clear();
         textRace.clear();
-    }
-    private void buttonNewFileClicked(){
-        
     }
 
 }

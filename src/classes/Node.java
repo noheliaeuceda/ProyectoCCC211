@@ -2,13 +2,13 @@ package classes;
 
 public class Node {
 
-    public Person content;
+    public String id;
     public int pos;
     public boolean available;
     public Node next;
 
-    public Node(Person content, int pos){
-        this.content = content;
+    public Node(String id, int pos){
+        this.id = id;
         this.pos = pos;
         available = false;
         next = null;
@@ -16,8 +16,12 @@ public class Node {
 
     public Node(int pos){
         this.pos = pos;
-        content = null;
+        id = null;
         available = true;
         next = null;
+    }
+
+    public String toString(){
+        return "#" + pos + ", available: " + available;
     }
 }

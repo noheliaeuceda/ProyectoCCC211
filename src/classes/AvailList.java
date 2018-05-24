@@ -20,17 +20,21 @@ public class AvailList {
         return first == null || (first == last && first.available);
     }
 
-    public int add(Person person) {
+    public int add(Record record) {
         Node temp;
         Node newNode;
-        if (person == null) {
+        if (record == null) {
             newNode = new Node(size);
             removed++;
         } else {
-            newNode = new Node(person, size);
+            newNode = new Node(record.getPK(), size);
         }
 
-        if (isEmpty()) {
+        if (init && first != null && first.available){
+            last.next = newNode;
+            last = newNode;
+            size++;
+        } else if (isEmpty()) {
             first = last = newNode;
             size++;
         } else if (removed == 0 || init) {
@@ -41,7 +45,7 @@ public class AvailList {
             temp = first;
             while (temp != null){
                 if (temp.available){
-                    temp.content = person;
+                    temp.id = record.getPK();
                     temp.available = false;
                     removed--;
                     return temp.pos;
@@ -52,12 +56,12 @@ public class AvailList {
         return -1;
     }
 
-    public void remove(Person person){
+    public void remove(Record record){
         Node temp;
         if (!isEmpty()) {
             temp = first;
             while (temp != null){
-                if (!temp.available && temp.content == person){
+                if (!temp.available && temp.id.equals(record.getPK())){
                     temp.available = true;
                     removed++;
                     break;
@@ -65,6 +69,17 @@ public class AvailList {
                 temp = temp.next;
             }
         }
+    }
+
+    public void print(){
+        StringBuilder result = new StringBuilder("Avail List:\n");
+        Node temp = first;
+        while (temp != null) {
+            result.append(temp.toString());
+            result.append('\n');
+            temp = temp.next;
+        }
+        System.out.println(result.toString());
     }
 
 }

@@ -5,30 +5,33 @@ import javafx.scene.control.ListView;
 import java.io.EOFException;
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 
 public class Registry {
 
     private File file;
     private ListView fxList;
-    private ListView fxListAvail;
-    private AvailList database;
+    private AvailList aList;
+    private Metadata metadata;
 
-    public Registry(String filename, ListView fxList, ListView listAvail) {
-        this.database = new AvailList();
+    public Registry(String filename, ListView fxList) {
+        aList = new AvailList();
         this.fxList = fxList;
-        this.fxListAvail = listAvail;
-        this.file = new File(filename);
+        this.file = new File(filename + ".txt");
+        // TODO buscar el nombre del archivo de metadata
+        metadata = new Metadata(filename + "Metadata.txt");
         load();
     }
 
-    public void addPerson(Person person){
+    public void changeMetadata(Field... fields){
+        metadata = new Metadata(file.getName() + "Metadata.txt", fields);
+    }
+
+    public void add(String... fields) {
+        Record record = parse(fields);
         boolean pkRepeated = false;
-        Node temp = database.first;
-        Person p;
-        while (temp != null){
-            p = temp.content;
-            if (!temp.available && p.getId().equals(person.getId())){
+        Node temp = aList.first;
+        while (temp != null) {
+            if (!temp.available && record.getPK().equals(temp.id)){
                 pkRepeated = true;
                 break;
             }
@@ -36,99 +39,96 @@ public class Registry {
         }
 
         if (!pkRepeated) {
-            int pos = database.add(person);
+            int pos = aList.add(record);
             if (pos == -1) {
-                append(person);
-                fxList.getItems().add(person);
+                append(record);
+                fxList.getItems().add(record);
             } else {
-                rewrite(person, pos);
-                fxList.getItems().set(pos, person);
+                rewrite(record, pos);
+                fxList.getItems().set(pos, record);
             }
         }
     }
 
-    public void removePerson(Person person) {
-        database.remove(person);
-        System.out.println(person);;
+    public void remove(Record record) {
+        aList.remove(record);
+        update();
     }
 
     public void load(){
-        int deleted = 0;
         if (file.exists()) {
-            ArrayList<String> readBuffer = new ArrayList<>();
             RandomAccessFile raFile;
             try {
                 raFile = new RandomAccessFile(file.getName(), "r");
                 try {
-                    String line;
-                    while (true) {
-                        line = raFile.readUTF();
-                        if (readBuffer.size() >= 10)
-                            translate(readBuffer);
-                        readBuffer.add(line);
-                    }
+                    while (true)
+                        translate(raFile.readUTF());
                 } catch (EOFException e) { }
-
-                if (!readBuffer.isEmpty())
-                    translate(readBuffer);
 
                 raFile.close();
             } catch (Exception e) {
                 System.out.println("Error reading from file " + e.getMessage());
                 e.printStackTrace();
             }
-
-            Node temp = database.first;
-            while (temp != null) {
-//                if (temp.content != null)
-                    fxList.getItems().add(temp.content);
-                temp = temp.next;
-            }
-            database.init = false;
+            aList.init = false;
         }
     }
 
-    public void translate(ArrayList<String> textData){
+    public void translate(String data){
+        if (data.equals(metadata.getDeleted())) {
+            aList.add(null);
+            fxList.getItems().add(null);
+        } else {
+            parse(data);
+        }
+    }
+
+    public void parse(String data){
         int pos;
-        String tName, tSurname, tId, tAddress, tPhone, tGender, tRace;
-        Person tempPerson;
-
-        for (String data : textData){
-            if (data.equals(Person.DELETED)) {
-                database.add(null);
-            } else {
-                pos = 0;
-                tId = data.substring(pos, pos + Person.ID_SIZE).trim();
-                pos += Person.ID_SIZE;
-                tName = data.substring(pos, pos + Person.NAME_SIZE).trim();
-                pos += Person.NAME_SIZE;
-                tSurname = data.substring(pos, pos + Person.SURNAME_SIZE).trim();
-                pos += Person.SURNAME_SIZE;
-                tAddress = data.substring(pos, pos + Person.ADDRESS_SIZE).trim();
-                pos += Person.ADDRESS_SIZE;
-                tPhone = data.substring(pos, pos + Person.PHONE_SIZE).trim();
-                pos += Person.PHONE_SIZE;
-                tGender = data.substring(pos, pos + Person.GENDER_SIZE).trim();
-                pos += Person.GENDER_SIZE;
-                tRace = data.substring(pos, pos + Person.RACE_SIZE).trim();
-
-                try {
-                    tempPerson = new Person(tName, tSurname, tId, tAddress, tPhone, tGender, tRace);
-                    database.add(tempPerson);
-                } catch (LongLengthException e) {
-                    System.out.println("Error adding element " + e.getMessage());
-                }
+        Record tempRecord;
+        Field tempField;
+        try {
+            tempRecord = new Record();
+            pos = 0;
+            for (Field f : metadata.getFieldsData()) {
+                tempField = new Field(f);
+                tempRecord.add(tempField, data.substring(pos, pos + f.size));
+                pos += f.size;
             }
+            aList.add(tempRecord);
+            fxList.getItems().add(tempRecord);
+        } catch (LongLengthException e){
+            System.out.println("Error creating record! " + e.getMessage());
         }
-        textData.clear();
     }
 
-    public void append(Person person){
+    public Record parse(String... fields){
+        // TODO suponiendo que el orden en que son recibidos los argumentos es el mismo que el de la metadata
+        int pos = 0;
+        Record tempRecord = null;
+        Field tempField;
+        try {
+            tempRecord = new Record();
+            for (Field f : metadata.getFieldsData()){
+                tempField = new Field(f);
+                tempRecord.add(tempField, fields[pos]);
+                pos++;
+            }
+        } catch (LongLengthException e){
+            System.out.println("Error creating record! " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println(1);
+            e.printStackTrace();
+        }
+        return tempRecord;
+    }
+
+    public void append(Record record){
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
             raFile.seek(raFile.length());
-            raFile.writeUTF(person.prettyString() + '\n');
+            raFile.writeUTF(record.prettyString() + '\n');
             raFile.close();
         } catch (Exception e) {
             System.out.println("Error writing to file " + e.getMessage());
@@ -136,12 +136,12 @@ public class Registry {
         }
     }
 
-    public void rewrite(Person person, int pos){
+    public void rewrite(Record record, int pos){
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
-            raFile.seek(Person.LENGTH * pos);
-            raFile.writeUTF(person.prettyString() + '\n');
+            raFile.seek(metadata.getLength() * pos);
+            raFile.writeUTF(record.prettyString() + '\n');
             raFile.close();
         } catch (Exception e) {
             System.out.println("Error writing to file " + e.getMessage());
@@ -153,12 +153,12 @@ public class Registry {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
-            Node temp = database.first;
+            Node temp = aList.first;
 
             while (temp != null){
                 if (temp.available){
-                    raFile.seek(Person.LENGTH * temp.pos);
-                    raFile.writeUTF(Person.DELETED);
+                    raFile.seek(metadata.getLength() * temp.pos);
+                    raFile.writeUTF(metadata.getDeleted());
                 }
                 temp = temp.next;
             }
@@ -168,5 +168,9 @@ public class Registry {
             System.out.println("Error writing to file " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public void printAvailList(){
+        aList.print();
     }
 }
