@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 // TODO comboox en tipo de datos
 //
 
-public class Controller implements Initializable {
+public class guiController implements Initializable {
 
     private ArrayList<Field> metaFields;
     private ArrayList<Field> tempFields;

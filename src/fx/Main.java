@@ -13,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui.fxml"));
         Parent root = loader.load();
-        Controller controller = loader.getController();
+        guiController controller = loader.getController();
         primaryStage.setOnHidden(e -> close(controller));
 
         primaryStage.setTitle("Registry");
@@ -21,7 +21,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public void close(Controller controller){
+    public void close(guiController controller){
         controller.close();
         Platform.exit();
     }
