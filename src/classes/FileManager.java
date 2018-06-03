@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
-public class Registry {
+public class FileManager {
 
     private File file;
     private String filename;
@@ -15,12 +15,12 @@ public class Registry {
     private AvailList aList;
     private Metadata metadata;
 
-    public Registry(String filename, ListView fxList) {
-        aList = new AvailList();
+    public FileManager(String filename, ListView fxList) {
         this.filename = filename;
         this.fxList = fxList;
         this.file = new File(filename + ".txt");
         metadata = new Metadata(filename + "Metadata.txt");
+        aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), filename + ".txt");
         load();
     }
 
@@ -30,42 +30,57 @@ public class Registry {
 
     public void add(ArrayList<Field> fields) {
         Record record = new Record(fields);
-        boolean pkRepeated = false;
-        Node temp = aList.first;
-        while (temp != null) {
-            if (!temp.available && record.getPK().equals(temp.id)){
-                pkRepeated = true;
-                break;
-            }
-            temp = temp.next;
-        }
-
-        if (!pkRepeated) {
-            int pos = aList.add(record);
-            if (pos == -1) {
+        if (!pkExists(record.getPK()) && record.prettyString().charAt(0) != '*') {
+            if (aList.isEmpty()) {
                 append(record);
                 fxList.getItems().add(record);
                 fxList.refresh();
             } else {
+                int pos = aList.remove();
                 rewrite(record, pos);
+                if (aList.isEmpty())
+                    metadata.update(-1);
+                else
+                    metadata.update(aList.first.pos);
                 fxList.getItems().set(pos, record);
             }
         }
     }
 
-    public void remove(Record record) {
-        aList.remove(record);
-        update();
+    public void remove(int pos) {
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file.getName(), "rw");
+            if (aList.isEmpty()) {
+                raFile.seek(metadata.getLength() * pos);
+                raFile.writeUTF(metadata.getDeleted());
+                metadata.update(pos);
+            } else {
+                raFile.seek(metadata.getLength() * pos);
+                raFile.writeUTF(metadata.getDeleted());
+                raFile.seek(0);
+                raFile.seek(metadata.getLength() * aList.last.pos);
+                raFile.writeUTF(metadata.getDeleted(pos));
+            }
+            aList.add(pos);
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error writing to file " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    public void load(){
+    public void load() {
         if (file.exists()) {
+            Record tempRecord;
             RandomAccessFile raFile;
             try {
                 raFile = new RandomAccessFile(file.getName(), "r");
                 try {
-                    while (true)
-                        translate(raFile.readUTF());
+                    while (true) {
+                        tempRecord = parse(raFile.readUTF());
+                        fxList.getItems().add(tempRecord);
+                    }
                 } catch (EOFException e) { }
 
                 raFile.close();
@@ -73,22 +88,10 @@ public class Registry {
                 System.out.println("Error reading from file " + e.getMessage());
                 e.printStackTrace();
             }
-//             TODO fix
-//            aList.init = false;
-        }
-        aList.init = false;
-    }
-
-    public void translate(String data){
-        if (data.equals(metadata.getDeleted())) {
-            aList.add(null);
-            fxList.getItems().add(null);
-        } else {
-            parse(data);
         }
     }
 
-    public void parse(String data){
+    public Record parse(String data) {
         int pos;
         Record tempRecord;
         Field tempField;
@@ -100,14 +103,14 @@ public class Registry {
                 tempRecord.add(tempField);
                 pos += f.size;
             }
-            aList.add(tempRecord);
-            fxList.getItems().add(tempRecord);
+            return tempRecord;
         } catch (LongLengthException e){
             System.out.println("Error creating record! " + e.getMessage());
         }
+        return null;
     }
 
-    public void append(Record record){
+    public void append(Record record) {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
@@ -120,7 +123,7 @@ public class Registry {
         }
     }
 
-    public void rewrite(Record record, int pos){
+    public void rewrite(Record record, int pos) {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
@@ -133,25 +136,27 @@ public class Registry {
         }
     }
 
-    public void update(){
-        RandomAccessFile raFile;
-        try {
-            raFile = new RandomAccessFile(file.getName(), "rw");
-            Node temp = aList.first;
+    public boolean pkExists(String pk) {
+        Record tempRecord;
+        if (file.exists()) {
+            RandomAccessFile raFile;
+            try {
+                raFile = new RandomAccessFile(file.getName(), "r");
+                try {
+                    while (true) {
+                        tempRecord = parse(raFile.readUTF());
+                        if (tempRecord.getPK().equals(pk))
+                            return true;
+                    }
+                } catch (EOFException e) { }
 
-            while (temp != null){
-                if (temp.available){
-                    raFile.seek(metadata.getLength() * temp.pos);
-                    raFile.writeUTF(metadata.getDeleted());
-                }
-                temp = temp.next;
+                raFile.close();
+            } catch (Exception e) {
+                System.out.println("Error reading from file " + e.getMessage());
+                e.printStackTrace();
             }
-
-            raFile.close();
-        } catch (Exception e) {
-            System.out.println("Error writing to file " + e.getMessage());
-            e.printStackTrace();
         }
+        return false;
     }
 
     public int getFieldCount() {

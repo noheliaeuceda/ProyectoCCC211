@@ -3,7 +3,7 @@ package fx;
 import classes.Field;
 import classes.LongLengthException;
 import classes.Record;
-import classes.Registry;
+import classes.FileManager;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -13,8 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-// TODO comboox en tipo de datos
-//
+// TODO poner un comboox en los tipo de datos
 
 public class guiController implements Initializable {
 
@@ -23,7 +22,7 @@ public class guiController implements Initializable {
     private boolean hasPK;
     private int metaFieldsNum;
     private int bufferedFields;
-    private Registry registry;
+    private FileManager fileManager;
 
     public VBox newFieldsVBox;
     public VBox addFieldsVBox;
@@ -50,17 +49,17 @@ public class guiController implements Initializable {
         } catch (Exception e) {
             System.out.println("Error! " + e.getMessage());
         }
-        registry = new Registry(lastOpened, listMain);
+        fileManager = new FileManager(lastOpened, listMain);
         tempFields = new ArrayList<>();
         bufferedFields = 0;
         fieldsCombo.getItems().add(2);
         fieldsCombo.getItems().add(3);
         fieldsCombo.getItems().add(4);
         fieldsCombo.getItems().add(5);
-        if (!registry.hasMetadata()) {
+        if (!fileManager.hasMetadata()) {
             addFieldsVBox.setVisible(false);
         } else{
-            addFieldLabel.setText("Field " + registry.at(0).name + " content:");
+            addFieldLabel.setText("Field " + fileManager.at(0).name + " content:");
         }
         newFieldsVBox.setVisible(false);
     }
@@ -69,15 +68,15 @@ public class guiController implements Initializable {
         Field tField;
         if (!fieldText.getText().equals("")) {
             try {
-                tField = new Field(registry.at(bufferedFields), fieldText.getText());
+                tField = new Field(fileManager.at(bufferedFields), fieldText.getText());
                 listBuffer.getItems().add(tField);
                 tempFields.add(tField);
-                addFieldLabel.setText("Field " + registry.at(bufferedFields).name + " content:");
+                addFieldLabel.setText("Field " + fileManager.at(bufferedFields).name + " content:");
                 bufferedFields++;
                 clearFields();
 
-                if (bufferedFields >= registry.getFieldCount()) {
-                    registry.add(tempFields);
+                if (bufferedFields >= fileManager.getFieldCount()) {
+                    fileManager.add(tempFields);
                     listBuffer.getItems().clear();
                     bufferedFields = 0;
                     tempFields = new ArrayList<>();
@@ -92,13 +91,13 @@ public class guiController implements Initializable {
         int pos = listMain.getSelectionModel().getSelectedIndex();
         Record selectedRecord = (Record) listMain.getSelectionModel().getSelectedItem();
         if (selectedRecord != null) {
-            registry.remove(selectedRecord);
+            fileManager.remove(pos);
             listMain.getItems().set(pos, null);
         }
     }
 
     public void buttonPrintAListClicked() {
-        registry.printAvailList();
+        fileManager.printAvailList();
     }
 
     public void buttonMetadataClicked(){
@@ -111,7 +110,7 @@ public class guiController implements Initializable {
                 System.out.println("Error! " + e.getMessage());
             }
 
-            registry = new Registry(databaseText.getText(), listMain);
+            fileManager = new FileManager(databaseText.getText(), listMain);
             metaFieldsNum = (int) fieldsCombo.getSelectionModel().getSelectedItem();
             newFieldsVBox.setVisible(true);
             metaFields = new ArrayList<>();
@@ -156,14 +155,14 @@ public class guiController implements Initializable {
                 bufferedFields = 0;
                 newFieldsVBox.setVisible(false);
                 addFieldsVBox.setVisible(true);
-                registry.changeMetadata(metaFields, metaFieldsNum);
-                addFieldLabel.setText("Field " + registry.at(0).name + " content:");
+                fileManager.changeMetadata(metaFields, metaFieldsNum);
+                addFieldLabel.setText("Field " + fileManager.at(0).name + " content:");
             }
         }
     }
 
     public void close() {
-        registry.update();
+        // closing business
     }
 
     private void clearFields(){

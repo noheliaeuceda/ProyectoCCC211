@@ -12,18 +12,19 @@ public class Metadata {
     // type
     // name
     // is primary key
+    // Pos of first deleted element
 
     private File file;
     private int fieldCount;
     private ArrayList<Field> fieldsData;
     private int length;
-    private String deleted;
+    private int firstDeleted;
 
     public Metadata(String filename) {
         file = new File(filename);
         fieldsData = new ArrayList<>();
         length = 3;
-        deleted = String.format("%" + (length - 2) + "s", "\n").replace(' ', '*');
+        firstDeleted = -1;
         loadMetadata();
     }
 
@@ -32,7 +33,6 @@ public class Metadata {
         this.fieldCount = fieldCount;
         fieldsData = new ArrayList<>();
         length = 3;
-        deleted = String.format("%" + (length - 2) + "s", "\n").replace(' ', '*');
         createMetadata(fields);
     }
 
@@ -53,7 +53,7 @@ public class Metadata {
                     tPrimaryKey = Boolean.valueOf(raFile.readUTF().trim());
                     addField(new Field(tSize, tType, tName, tPrimaryKey));
                 }
-
+                firstDeleted = Integer.valueOf(raFile.readUTF().trim());
                 raFile.close();
             } catch (Exception e) {
                 System.out.println("Error reading from file " + e.getMessage());
@@ -66,7 +66,7 @@ public class Metadata {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
-            // TODO truncar
+            // TODO truncate
             raFile.writeUTF(Integer.toString(fields.size()) + '\n');
 
             for (Field f : fields){
@@ -76,7 +76,7 @@ public class Metadata {
                 raFile.writeUTF(Boolean.toString(f.primaryKey) + '\n');
                 addField(f);
             }
-
+            raFile.writeUTF("-1");
             raFile.close();
         } catch (Exception e) {
             System.out.println("Error writing to file " + e.getMessage());
@@ -84,10 +84,32 @@ public class Metadata {
         }
     }
 
+    public void update(int head) {
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file.getName(), "rw");
+            raFile.readUTF();
+            for (int i = 0; i < fieldCount; i++) {
+                raFile.readUTF();
+                raFile.readUTF();
+                raFile.readUTF();
+                raFile.readUTF();
+            }
+            raFile.writeUTF(Integer.toString(head));
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error reading from file " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public void addField(Field field) {
         fieldsData.add(field);
         length += field.size;
-        deleted = String.format("%" + (length - 2) + "s", "\n").replace(' ', '*');
+    }
+
+    public int getFirstDeleted(){
+        return firstDeleted;
     }
 
     public int getLength() {
@@ -95,7 +117,12 @@ public class Metadata {
     }
 
     public String getDeleted() {
-        return deleted;
+        return "*-1" + String.format("%" + (length - 5) + "s", "\n");
+    }
+
+    public String getDeleted(int pos) {
+        String strPos = Integer.toString(pos);
+        return "*" + strPos + String.format("%" + (length - 3 - strPos.length()) + "s", "\n");
     }
 
     public int getFieldCount(){

@@ -1,74 +1,72 @@
 package classes;
 
+import java.io.RandomAccessFile;
+
 public class AvailList {
 
-    public boolean init;
     public Node first;
     public Node last;
-    public int removed;
     public int size;
 
-    public AvailList(){
-        init = true;
-        first = null;
-        last = null;
-        removed = 0;
+    public AvailList(int pos, int fieldLength, String filename) {
+        first = last = null;
         size = 0;
+        if (pos != -1)
+            load(filename, pos, fieldLength);
+    }
+
+    public void load(String filename, int pos, int fieldLength) {
+        try {
+            RandomAccessFile raFile = new RandomAccessFile(filename, "r");
+            int nextPos = pos;
+            while (nextPos != -1) {
+                add(nextPos);
+                raFile.seek(0);
+                raFile.seek(fieldLength * nextPos);
+                nextPos = Integer.valueOf(raFile.readUTF().trim());
+            }
+            raFile.close();
+        } catch (Exception e) { }
     }
 
     public boolean isEmpty(){
-        return first == null || (first == last && first.available);
+        return first == null;
     }
 
-    public int add(Record record) {
-        Node temp;
-        Node newNode;
-        if (record == null) {
-            newNode = new Node(size);
-            removed++;
+    public void add(int pos) {
+        if (isEmpty()) {
+            first = last = new Node(pos);
+            size = 1;
         } else {
-            newNode = new Node(record.getPK(), size);
+            last.next = new Node(pos);
+            size++;
         }
-
-        if (init && first != null && first.available){
-            last.next = newNode;
-            last = newNode;
-            size++;
-        } else if (isEmpty()) {
-            first = last = newNode;
-            size++;
-        } else if (removed == 0 || init) {
-            last.next = newNode;
-            last = newNode;
-            size++;
-        } else {
-            temp = first;
-            while (temp != null){
-                if (temp.available){
-                    temp.id = record.getPK();
-                    temp.available = false;
-                    removed--;
-                    return temp.pos;
-                }
-                temp = temp.next;
-            }
-        }
-        return -1;
     }
 
-    public void remove(Record record){
-        Node temp;
-        if (!isEmpty()) {
-            temp = first;
-            while (temp != null){
-                if (!temp.available && temp.id.equals(record.getPK())){
-                    temp.available = true;
-                    removed++;
-                    break;
-                }
-                temp = temp.next;
-            }
+    public int remove() {
+        // only the first element of the list can be removed
+        int head = first.pos;
+        if (size == 1) {
+            first = last = null;
+        } else {
+            Node save = first;
+            first = first.next;
+            save.next = null;
         }
+        size--;
+        return head;
+    }
+
+    public Node at(int pos) {
+        // get a node from the list at a given position
+        Node temp = first;
+        if (pos >= 0 && pos < size)
+            for (int i = 0; i < size; i++)
+                if (i == pos)
+                    return temp;
+                else
+                    temp = temp.next;
+        return null;
     }
 
     public void print(){
