@@ -1,4 +1,4 @@
-package classes;
+package main.classes;
 
 import java.io.RandomAccessFile;
 
@@ -7,6 +7,21 @@ public class AvailList {
     public Node first;
     public Node last;
     public int size;
+
+    public class Node {
+
+        public int pos;
+        public Node next;
+
+        public Node(int pos){
+            this.pos = pos;
+            next = null;
+        }
+
+        public String toString(){
+            return "#" + pos;
+        }
+    }
 
     public AvailList(int pos, int fieldLength, String filename) {
         first = last = null;

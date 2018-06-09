@@ -1,9 +1,9 @@
-package fx;
+package main.controllers;
 
-import classes.Field;
-import classes.LongLengthException;
-import classes.Record;
-import classes.FileManager;
+import main.classes.Field;
+import main.exceptions.LongLengthException;
+import main.classes.Record;
+import main.classes.FileManager;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -46,10 +46,8 @@ public class guiController implements Initializable {
             RandomAccessFile raFile = new RandomAccessFile("lastOpened.txt", "r");
             lastOpened = raFile.readUTF();
             raFile.close();
-        } catch (Exception e) {
-            System.out.println("Error! " + e.getMessage());
-        }
-        fileManager = new FileManager(lastOpened, listMain);
+        } catch (Exception e) { }
+        fileManager = new FileManager(lastOpened);
         tempFields = new ArrayList<>();
         bufferedFields = 0;
         fieldsCombo.getItems().add(2);
@@ -58,10 +56,14 @@ public class guiController implements Initializable {
         fieldsCombo.getItems().add(5);
         if (!fileManager.hasMetadata()) {
             addFieldsVBox.setVisible(false);
-        } else{
+        } else {
             addFieldLabel.setText("Field " + fileManager.at(0).name + " content:");
         }
         newFieldsVBox.setVisible(false);
+    }
+
+    public void setFileManager(FileManager fileManager) {
+        this.fileManager = fileManager;
     }
 
     public void buttonAddClicked() {
@@ -110,7 +112,7 @@ public class guiController implements Initializable {
                 System.out.println("Error! " + e.getMessage());
             }
 
-            fileManager = new FileManager(databaseText.getText(), listMain);
+            fileManager = new FileManager(databaseText.getText());
             metaFieldsNum = (int) fieldsCombo.getSelectionModel().getSelectedItem();
             newFieldsVBox.setVisible(true);
             metaFields = new ArrayList<>();
@@ -159,10 +161,6 @@ public class guiController implements Initializable {
                 addFieldLabel.setText("Field " + fileManager.at(0).name + " content:");
             }
         }
-    }
-
-    public void close() {
-        // closing business
     }
 
     private void clearFields(){

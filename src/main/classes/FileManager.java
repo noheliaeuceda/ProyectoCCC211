@@ -1,6 +1,6 @@
-package classes;
+package main.classes;
 
-import javafx.scene.control.ListView;
+import main.exceptions.LongLengthException;
 
 import java.io.EOFException;
 import java.io.File;
@@ -11,21 +11,21 @@ public class FileManager {
 
     private File file;
     private String filename;
-    private ListView fxList;
     private AvailList aList;
     private Metadata metadata;
 
-    public FileManager(String filename, ListView fxList) {
+    public FileManager(String filename) {
         this.filename = filename;
-        this.fxList = fxList;
-        this.file = new File(filename + ".txt");
-        metadata = new Metadata(filename + "Metadata.txt");
-        aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), filename + ".txt");
-        load();
+        this.file = new File(filename);
+        metadata = new Metadata(filename + ".metadata");
+        aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), filename);
+        touch();
+//        load lo utilizabamos para cargar la lista en el interfaz, pero ya no mostramos la lista
+//        load();
     }
 
     public void changeMetadata(ArrayList<Field> fields, int fieldCount){
-        metadata = new Metadata(filename + "Metadata.txt", fieldCount, fields);
+        metadata = new Metadata(filename + ".metadata", fieldCount, fields);
     }
 
     public void add(ArrayList<Field> fields) {
@@ -33,8 +33,6 @@ public class FileManager {
         if (!pkExists(record.getPK()) && record.prettyString().charAt(0) != '*') {
             if (aList.isEmpty()) {
                 append(record);
-                fxList.getItems().add(record);
-                fxList.refresh();
             } else {
                 int pos = aList.remove();
                 rewrite(record, pos);
@@ -42,7 +40,6 @@ public class FileManager {
                     metadata.update(-1);
                 else
                     metadata.update(aList.first.pos);
-                fxList.getItems().set(pos, record);
             }
         }
     }
@@ -70,7 +67,7 @@ public class FileManager {
         }
     }
 
-    public void load() {
+    private void load() {
         if (file.exists()) {
             Record tempRecord;
             RandomAccessFile raFile;
@@ -79,7 +76,6 @@ public class FileManager {
                 try {
                     while (true) {
                         tempRecord = parse(raFile.readUTF());
-                        fxList.getItems().add(tempRecord);
                     }
                 } catch (EOFException e) { }
 
@@ -91,7 +87,7 @@ public class FileManager {
         }
     }
 
-    public Record parse(String data) {
+    private Record parse(String data) {
         int pos;
         Record tempRecord;
         Field tempField;
@@ -110,7 +106,7 @@ public class FileManager {
         return null;
     }
 
-    public void append(Record record) {
+    private void append(Record record) {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
@@ -123,7 +119,7 @@ public class FileManager {
         }
     }
 
-    public void rewrite(Record record, int pos) {
+    private void rewrite(Record record, int pos) {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file.getName(), "rw");
@@ -136,7 +132,20 @@ public class FileManager {
         }
     }
 
-    public boolean pkExists(String pk) {
+    private void touch() {
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file.getName(), "rw");
+            raFile.close();
+            raFile = new RandomAccessFile(file.getName() + ".metadata", "rw");
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error with file " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private boolean pkExists(String pk) {
         Record tempRecord;
         if (file.exists()) {
             RandomAccessFile raFile;

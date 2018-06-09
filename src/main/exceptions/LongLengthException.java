@@ -1,4 +1,4 @@
-package classes;
+package main.exceptions;
 
 public class LongLengthException extends Exception{
 

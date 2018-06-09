@@ -1,4 +1,4 @@
-package classes;
+package main.classes;
 
 import java.io.File;
 import java.io.RandomAccessFile;

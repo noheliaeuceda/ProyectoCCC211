@@ -1,4 +1,6 @@
-package classes;
+package main.classes;
+
+import main.exceptions.LongLengthException;
 
 public class Field {
 
