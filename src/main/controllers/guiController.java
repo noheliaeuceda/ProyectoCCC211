@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class guiController implements Initializable {
             lastOpened = raFile.readUTF();
             raFile.close();
         } catch (Exception e) { }
-        fileManager = new FileManager(lastOpened);
+        fileManager = new FileManager(new File(lastOpened));
         tempFields = new ArrayList<>();
         bufferedFields = 0;
         fieldsCombo.getItems().add(2);
@@ -112,7 +113,7 @@ public class guiController implements Initializable {
                 System.out.println("Error! " + e.getMessage());
             }
 
-            fileManager = new FileManager(databaseText.getText());
+            fileManager = new FileManager(new File(databaseText.getText()));
             metaFieldsNum = (int) fieldsCombo.getSelectionModel().getSelectedItem();
             newFieldsVBox.setVisible(true);
             metaFields = new ArrayList<>();
@@ -157,7 +158,7 @@ public class guiController implements Initializable {
                 bufferedFields = 0;
                 newFieldsVBox.setVisible(false);
                 addFieldsVBox.setVisible(true);
-                fileManager.changeMetadata(metaFields, metaFieldsNum);
+//                fileManager.changeMetadata(metaFields, metaFieldsNum);
                 addFieldLabel.setText("Field " + fileManager.at(0).name + " content:");
             }
         }

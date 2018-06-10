@@ -20,56 +20,48 @@ public class Metadata {
     private int length;
     private int firstDeleted;
 
-    public Metadata(String filename) {
-        file = new File(filename);
+    public Metadata(File file) {
+        this.file = file;
+        fieldCount = 0;
         fieldsData = new ArrayList<>();
         length = 3;
         firstDeleted = -1;
-        loadMetadata();
-    }
-
-    public Metadata(String filename, int fieldCount, ArrayList<Field> fields) {
-        file = new File(filename);
-        this.fieldCount = fieldCount;
-        fieldsData = new ArrayList<>();
-        length = 3;
-        createMetadata(fields);
+        if (file.exists())
+            loadMetadata();
     }
 
     private void loadMetadata() {
-        if (file.exists()) {
-            RandomAccessFile raFile;
-            int tSize;
-            boolean tPrimaryKey;
-            String tType, tName;
-            try {
-                raFile = new RandomAccessFile(file.getName(), "r");
-                fieldCount = Integer.valueOf(raFile.readUTF().trim());
+        RandomAccessFile raFile;
+        int tSize;
+        boolean tPrimaryKey;
+        String tType, tName;
+        try {
+            raFile = new RandomAccessFile(file, "r");
+            fieldCount = Integer.valueOf(raFile.readUTF().trim());
 
-                for (int i = 0; i < fieldCount; i++) {
-                    tSize = Integer.valueOf(raFile.readUTF().trim());
-                    tType = raFile.readUTF().trim();
-                    tName = raFile.readUTF().trim();
-                    tPrimaryKey = Boolean.valueOf(raFile.readUTF().trim());
-                    addField(new Field(tSize, tType, tName, tPrimaryKey));
-                }
-                firstDeleted = Integer.valueOf(raFile.readUTF().trim());
-                raFile.close();
-            } catch (Exception e) {
-                System.out.println("Error reading from file " + e.getMessage());
-                e.printStackTrace();
+            for (int i = 0; i < fieldCount; i++) {
+                tSize = Integer.valueOf(raFile.readUTF().trim());
+                tType = raFile.readUTF().trim();
+                tName = raFile.readUTF().trim();
+                tPrimaryKey = Boolean.valueOf(raFile.readUTF().trim());
+                addField(new Field(tSize, tType, tName, tPrimaryKey));
             }
+            firstDeleted = Integer.valueOf(raFile.readUTF().trim());
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error reading from file " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void createMetadata(ArrayList<Field> fields) {
+    private void writeMetadata() {
+        // TODO truncate file
         RandomAccessFile raFile;
         try {
-            raFile = new RandomAccessFile(file.getName(), "rw");
-            // TODO truncate
-            raFile.writeUTF(Integer.toString(fields.size()) + '\n');
+            raFile = new RandomAccessFile(file, "rw");
+            raFile.writeUTF(Integer.toString(fieldsData.size()) + '\n');
 
-            for (Field f : fields){
+            for (Field f : fieldsData){
                 raFile.writeUTF(Integer.toString(f.size));
                 raFile.writeUTF(f.type);
                 raFile.writeUTF(f.name);
@@ -84,10 +76,11 @@ public class Metadata {
         }
     }
 
-    public void update(int head) {
+    public void updateLastDeleted(int head) {
+        // actualiza la posicion del ultimo espacio eliminado en el available list
         RandomAccessFile raFile;
         try {
-            raFile = new RandomAccessFile(file.getName(), "rw");
+            raFile = new RandomAccessFile(file, "rw");
             raFile.readUTF();
             for (int i = 0; i < fieldCount; i++) {
                 raFile.readUTF();
@@ -106,6 +99,17 @@ public class Metadata {
     public void addField(Field field) {
         fieldsData.add(field);
         length += field.size;
+    }
+
+    public boolean hasPK() {
+        for (Field f : fieldsData)
+            if (f.primaryKey)
+                return true;
+        return false;
+    }
+
+    public void removeField(Field field) {
+        fieldsData.remove(field);
     }
 
     public int getFirstDeleted(){

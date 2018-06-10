@@ -10,22 +10,17 @@ import java.util.ArrayList;
 public class FileManager {
 
     private File file;
-    private String filename;
     private AvailList aList;
     private Metadata metadata;
 
-    public FileManager(String filename) {
-        this.filename = filename;
-        this.file = new File(filename);
-        metadata = new Metadata(filename + ".metadata");
-        aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), filename);
-        touch();
+    public FileManager(File file) {
+        this.file = file;
+        metadata = new Metadata(new File(file.getPath() + ".metadata"));
+        aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), file);
+        if (!file.exists())
+            touch();
 //        load lo utilizabamos para cargar la lista en el interfaz, pero ya no mostramos la lista
 //        load();
-    }
-
-    public void changeMetadata(ArrayList<Field> fields, int fieldCount){
-        metadata = new Metadata(filename + ".metadata", fieldCount, fields);
     }
 
     public void add(ArrayList<Field> fields) {
@@ -37,9 +32,9 @@ public class FileManager {
                 int pos = aList.remove();
                 rewrite(record, pos);
                 if (aList.isEmpty())
-                    metadata.update(-1);
+                    metadata.updateLastDeleted(-1);
                 else
-                    metadata.update(aList.first.pos);
+                    metadata.updateLastDeleted(aList.first.pos);
             }
         }
     }
@@ -47,11 +42,11 @@ public class FileManager {
     public void remove(int pos) {
         RandomAccessFile raFile;
         try {
-            raFile = new RandomAccessFile(file.getName(), "rw");
+            raFile = new RandomAccessFile(file, "rw");
             if (aList.isEmpty()) {
                 raFile.seek(metadata.getLength() * pos);
                 raFile.writeUTF(metadata.getDeleted());
-                metadata.update(pos);
+                metadata.updateLastDeleted(pos);
             } else {
                 raFile.seek(metadata.getLength() * pos);
                 raFile.writeUTF(metadata.getDeleted());
@@ -72,7 +67,7 @@ public class FileManager {
             Record tempRecord;
             RandomAccessFile raFile;
             try {
-                raFile = new RandomAccessFile(file.getName(), "r");
+                raFile = new RandomAccessFile(file, "r");
                 try {
                     while (true) {
                         tempRecord = parse(raFile.readUTF());
@@ -109,7 +104,7 @@ public class FileManager {
     private void append(Record record) {
         RandomAccessFile raFile;
         try {
-            raFile = new RandomAccessFile(file.getName(), "rw");
+            raFile = new RandomAccessFile(file, "rw");
             raFile.seek(raFile.length());
             raFile.writeUTF(record.prettyString() + '\n');
             raFile.close();
@@ -122,7 +117,7 @@ public class FileManager {
     private void rewrite(Record record, int pos) {
         RandomAccessFile raFile;
         try {
-            raFile = new RandomAccessFile(file.getName(), "rw");
+            raFile = new RandomAccessFile(file, "rw");
             raFile.seek(metadata.getLength() * pos);
             raFile.writeUTF(record.prettyString() + '\n');
             raFile.close();
@@ -135,9 +130,7 @@ public class FileManager {
     private void touch() {
         RandomAccessFile raFile;
         try {
-            raFile = new RandomAccessFile(file.getName(), "rw");
-            raFile.close();
-            raFile = new RandomAccessFile(file.getName() + ".metadata", "rw");
+            raFile = new RandomAccessFile(file, "rw");
             raFile.close();
         } catch (Exception e) {
             System.out.println("Error with file " + e.getMessage());
@@ -150,7 +143,7 @@ public class FileManager {
         if (file.exists()) {
             RandomAccessFile raFile;
             try {
-                raFile = new RandomAccessFile(file.getName(), "r");
+                raFile = new RandomAccessFile(file, "r");
                 try {
                     while (true) {
                         tempRecord = parse(raFile.readUTF());
@@ -168,6 +161,15 @@ public class FileManager {
         return false;
     }
 
+    public String getFilename() {
+        return file.getName();
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    // deprecados
     public int getFieldCount() {
         return metadata.getFieldCount();
     }

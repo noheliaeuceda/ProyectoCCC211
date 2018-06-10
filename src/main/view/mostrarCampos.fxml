@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="442.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.mostrarCamposController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="Archivo">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoNuevo" text="Nuevo" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoCargar" text="Cargar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoSalvar" text="Salvar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoCerrar" text="Cerrar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoSalir" text="Salir" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Campos">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposAgregar" text="Agregar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposListar" text="Listar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposModificar" text="Modificar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposBorrar" text="Borrar" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Registros">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosCargar" text="Cargar Prueba" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosIntroducir" text="Introducir" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosModificar" text="Modificar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBorrar" text="Borrar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosListar" text="Listar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosCruzar" text="Cruzar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBuscar" text="Buscar" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Indices">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuIndicesCrear" text="Crear" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuIndicesReindexar" text="Re-indexar" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Estandarización">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuEstandarizacionExcel" text="Exportar a Excel" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuEstandarizacionXML" text="Exportar XML con Schema" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <bottom>
+        <HBox BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="statusBarLabel" text="Estatus:" />
+            </children>
+            <padding>
+                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+            </padding>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </HBox>
+    </bottom>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <children>
+            <ListView fx:id="listShowFields" />
+            <Region>
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
+            </Region>
+            <Button mnemonicParsing="false" onAction="#returnPressed" text="OK" />
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

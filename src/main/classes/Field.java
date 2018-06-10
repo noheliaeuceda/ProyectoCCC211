@@ -42,7 +42,8 @@ public class Field {
     @Override
     public String toString() {
         if (content == null)
-            return "metadata";
-        return String.format("%-" + size + "s", content);
+            return "Field name: " + name + ", type: " + type + ", size: " + size + ", is primary key: " + primaryKey;
+        else
+            return String.format("%-" + size + "s", content);
     }
 }

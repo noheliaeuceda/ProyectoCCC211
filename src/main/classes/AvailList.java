@@ -1,5 +1,6 @@
 package main.classes;
 
+import java.io.File;
 import java.io.RandomAccessFile;
 
 public class AvailList {
@@ -23,16 +24,16 @@ public class AvailList {
         }
     }
 
-    public AvailList(int pos, int fieldLength, String filename) {
+    public AvailList(int pos, int fieldLength, File file) {
         first = last = null;
         size = 0;
         if (pos != -1)
-            load(filename, pos, fieldLength);
+            load(file, pos, fieldLength);
     }
 
-    public void load(String filename, int pos, int fieldLength) {
+    public void load(File file, int pos, int fieldLength) {
         try {
-            RandomAccessFile raFile = new RandomAccessFile(filename, "r");
+            RandomAccessFile raFile = new RandomAccessFile(file, "r");
             int nextPos = pos;
             while (nextPos != -1) {
                 add(nextPos);
