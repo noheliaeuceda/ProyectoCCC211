@@ -44,6 +44,17 @@ public class Record {
         return pkStr + result.toString();
     }
 
+    public String toCSV() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < fields.size(); i++) {
+            result.append(fields.get(i).getContent().trim());
+            if (i != fields.size() - 1)
+                result.append(',');
+        }
+        result.append('\n');
+        return result.toString();
+    }
+
     @Override
     public String toString(){
         // TODO cambiar el toString por algo mas legible

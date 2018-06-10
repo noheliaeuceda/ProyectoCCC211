@@ -128,49 +128,100 @@ public class mainController implements Initializable {
     }
 
     public void menuRegistrosIntroducir() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuRegistrosModificar() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuRegistrosBorrar() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuRegistrosListar() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuRegistrosCruzar() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuRegistrosBuscar() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuIndicesCrear() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuIndicesReindexar() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuEstandarizacionExcel() {
-
+        if (fileManager != null) {
+            if (fileManager.exportToCSV())
+                showSuccess("Archivo de Excel guardado con exito!");
+            else
+                showWarning("Hubo un error al crear el archivo!");
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public void menuEstandarizacionXML() {
+        if (fileManager != null) {
 
+        } else {
+            showWarning("No tiene ningun archivo abierto!");
+        }
     }
 
     public static void showWarning(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Alerta");
         alert.setHeaderText("Error al realizar la operacion");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public static void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Alerta");
+        alert.setHeaderText("Operacion exitosa!");
         alert.setContentText(message);
         alert.showAndWait();
     }

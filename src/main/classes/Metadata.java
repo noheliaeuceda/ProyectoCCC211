@@ -112,6 +112,17 @@ public class Metadata {
         fieldsData.remove(field);
     }
 
+    public String toCSV() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < fieldsData.size(); i++) {
+            result.append(fieldsData.get(i).name);
+            if (i != fieldsData.size() - 1)
+                result.append(',');
+        }
+        result.append('\n');
+        return result.toString();
+    }
+
     public int getFirstDeleted(){
         return firstDeleted;
     }

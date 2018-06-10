@@ -2,9 +2,7 @@ package main.classes;
 
 import main.exceptions.LongLengthException;
 
-import java.io.EOFException;
-import java.io.File;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.ArrayList;
 
 public class FileManager {
@@ -97,8 +95,8 @@ public class FileManager {
             return tempRecord;
         } catch (LongLengthException e){
             System.out.println("Error creating record! " + e.getMessage());
+            return null;
         }
-        return null;
     }
 
     private void append(Record record) {
@@ -159,6 +157,39 @@ public class FileManager {
             }
         }
         return false;
+    }
+
+    public boolean exportToCSV() {
+        FileWriter fileWriter;
+        BufferedWriter bfWriter;
+        RandomAccessFile raFile;
+        File csvFile = new File(file.getName().split("\\.")[0] + ".csv");
+        try {
+            fileWriter = new FileWriter(csvFile);
+            bfWriter = new BufferedWriter(fileWriter);
+            raFile = new RandomAccessFile(file, "r");
+            bfWriter.write(metadata.toCSV());
+            try {
+                String line;
+                Record tempRecord;
+                while (true) {
+                    line = raFile.readUTF();
+                    tempRecord = parse(line);
+                    if (tempRecord != null)
+                        bfWriter.write(tempRecord.toCSV());
+                }
+            } catch (EOFException e) { }
+
+            bfWriter.flush();
+            raFile.close();
+            fileWriter.close();
+            bfWriter.close();
+        } catch (Exception e) {
+            System.out.println("Error! " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public String getFilename() {
