@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="442.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.agregarCamposController">
+<BorderPane prefHeight="482.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.agregarCamposController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -68,108 +68,104 @@
       </HBox>
    </bottom>
    <center>
-      <HBox BorderPane.alignment="CENTER">
+      <VBox prefHeight="392.0" prefWidth="383.0">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
          <children>
-            <VBox prefHeight="392.0" prefWidth="383.0">
+            <Label text="Nombre del campo" />
+            <Region>
                <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="6.0" top="6.0" />
                </padding>
-               <children>
-                  <Label text="Nombre del campo" />
-                  <Region>
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <TextField fx:id="txtName" />
-                  <Region>
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <Label layoutX="20.0" layoutY="86.0" text="Tamaño del campo" />
-                  <Region layoutX="20.0" layoutY="190.0">
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <TextField fx:id="txtSize" layoutX="20.0" layoutY="49.0" />
-                  <Region>
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <Separator prefWidth="200.0" />
-                  <Region>
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <Label text="Tipo de campo" />
-                  <Region>
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <RadioButton fx:id="rbTypeString" mnemonicParsing="false" selected="true" text="Cadena">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="radioGroupType" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <Region layoutX="20.0" layoutY="103.0">
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <RadioButton fx:id="rbTypeInt" mnemonicParsing="false" text="Numero entero" toggleGroup="$radioGroupType" />
-                  <Region>
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <RadioButton fx:id="rbTypeFloat" mnemonicParsing="false" text="Punto flotante" toggleGroup="$radioGroupType" />
-                  <Region>
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <Separator prefWidth="200.0" />
-                  <Region layoutX="20.0" layoutY="227.0">
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <Label text="Es llave primaria?" />
-                  <Region layoutX="20.0" layoutY="227.0">
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <RadioButton fx:id="rbYesPk" mnemonicParsing="false" text="Si">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="radioGroupIsPK" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <Region layoutX="20.0" layoutY="227.0">
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <RadioButton fx:id="rbNotPk" layoutX="20.0" layoutY="268.0" mnemonicParsing="false" selected="true" text="No" toggleGroup="$radioGroupIsPK" />
-                  <Region layoutX="20.0" layoutY="285.0">
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-                  <Button mnemonicParsing="false" onAction="#agregarCampoPressed" text="Agregar Campo" />
-                  <Region layoutX="20.0" layoutY="331.0">
-                     <padding>
-                        <Insets bottom="6.0" top="6.0" />
-                     </padding>
-                  </Region>
-               </children>
-            </VBox>
+            </Region>
+            <TextField fx:id="txtName" />
+            <Region>
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <Label layoutX="20.0" layoutY="86.0" text="Tamaño del campo" />
+            <Region layoutX="20.0" layoutY="190.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <TextField fx:id="txtSize" layoutX="20.0" layoutY="49.0" />
+            <Region>
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <Separator prefWidth="200.0" />
+            <Region>
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <Label text="Tipo de campo" />
+            <Region>
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <RadioButton fx:id="rbTypeString" mnemonicParsing="false" selected="true" text="Cadena">
+               <toggleGroup>
+                  <ToggleGroup fx:id="radioGroupType" />
+               </toggleGroup>
+            </RadioButton>
+            <Region layoutX="20.0" layoutY="103.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <RadioButton fx:id="rbTypeInt" mnemonicParsing="false" text="Numero entero" toggleGroup="$radioGroupType" />
+            <Region>
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <RadioButton fx:id="rbTypeFloat" mnemonicParsing="false" text="Punto flotante" toggleGroup="$radioGroupType" />
+            <Region>
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <Separator prefWidth="200.0" />
+            <Region layoutX="20.0" layoutY="227.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <Label text="Es llave primaria?" />
+            <Region layoutX="20.0" layoutY="227.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <RadioButton fx:id="rbYesPk" mnemonicParsing="false" text="Si">
+               <toggleGroup>
+                  <ToggleGroup fx:id="radioGroupIsPK" />
+               </toggleGroup>
+            </RadioButton>
+            <Region layoutX="20.0" layoutY="227.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <RadioButton fx:id="rbNotPk" layoutX="20.0" layoutY="268.0" mnemonicParsing="false" selected="true" text="No" toggleGroup="$radioGroupIsPK" />
+            <Region layoutX="20.0" layoutY="285.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <Button mnemonicParsing="false" onAction="#agregarCampoPressed" text="Agregar Campo" />
+            <Region layoutX="20.0" layoutY="331.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
          </children>
-      </HBox>
+      </VBox>
    </center>
 </BorderPane>

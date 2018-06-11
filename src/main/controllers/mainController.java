@@ -91,7 +91,7 @@ public class mainController implements Initializable {
     public void menuCamposAgregar() throws IOException {
         if (fileManager != null) {
             Main.setFileManager(fileManager);
-            changeStage("../view/agregarCampos.fxml", "Agregar Campos", 370, 442);
+            changeStage("../view/agregarCampos.fxml", "Agregar Campos", 370, 482);
         } else {
             showWarning("No tiene ningun archivo abierto!");
         }
@@ -106,9 +106,10 @@ public class mainController implements Initializable {
         }
     }
 
-    public void menuCamposModificar() {
+    public void menuCamposModificar() throws IOException {
         if (fileManager != null) {
-            // nueva ventana
+            Main.setFileManager(fileManager);
+            changeStage("../view/modificarCampos.fxml", "Modificar Campos", 800, 482);
         } else {
             showWarning("No tiene ningun archivo abierto!");
         }

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="482.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.modificarCamposController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="Archivo">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoNuevo" text="Nuevo" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoCargar" text="Cargar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoSalvar" text="Salvar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoCerrar" text="Cerrar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuArchivoSalir" text="Salir" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Campos">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposAgregar" text="Agregar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposListar" text="Listar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposModificar" text="Modificar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposBorrar" text="Borrar" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Registros">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosCargar" text="Cargar Prueba" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosIntroducir" text="Introducir" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosModificar" text="Modificar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBorrar" text="Borrar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosListar" text="Listar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosCruzar" text="Cruzar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBuscar" text="Buscar" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Indices">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuIndicesCrear" text="Crear" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuIndicesReindexar" text="Re-indexar" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Estandarización">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuEstandarizacionExcel" text="Exportar a Excel" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuEstandarizacionXML" text="Exportar XML con Schema" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <bottom>
+        <HBox BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="statusBarLabel" text="Estatus:" />
+            </children>
+            <padding>
+                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+            </padding>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </HBox>
+    </bottom>
+   <center>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="375.0">
+               <children>
+                  <ListView fx:id="listShowFields" />
+                  <Region>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </Region>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#selectPressed" text="Modificar" />
+                        <Region>
+                           <HBox.margin>
+                              <Insets left="5.0" right="5.0" />
+                           </HBox.margin>
+                        </Region>
+                        <Button mnemonicParsing="false" onAction="#returnPressed" text="Regresar" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+            <Region>
+               <padding>
+                  <Insets left="6.0" right="6.0" />
+               </padding>
+            </Region>
+            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <Region layoutX="110.0" layoutY="10.0">
+               <padding>
+                  <Insets left="6.0" right="6.0" />
+               </padding>
+            </Region>
+            <VBox fx:id="vboxModify" prefHeight="392.0" prefWidth="383.0">
+               <children>
+                  <Label text="Nombre del campo" />
+                  <Region>
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <TextField fx:id="txtName" />
+                  <Region>
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <Label layoutX="20.0" layoutY="86.0" text="Tamaño del campo" />
+                  <Region layoutX="20.0" layoutY="190.0">
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <TextField fx:id="txtSize" layoutX="20.0" layoutY="49.0" />
+                  <Region>
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <Separator prefWidth="200.0" />
+                  <Region>
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <Label text="Tipo de campo" />
+                  <Region>
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <RadioButton fx:id="rbTypeString" mnemonicParsing="false" selected="true" text="Cadena">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="radioGroupType" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <Region layoutX="20.0" layoutY="103.0">
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <RadioButton fx:id="rbTypeInt" mnemonicParsing="false" text="Numero entero" toggleGroup="$radioGroupType" />
+                  <Region>
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <RadioButton fx:id="rbTypeFloat" mnemonicParsing="false" text="Punto flotante" toggleGroup="$radioGroupType" />
+                  <Region>
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <Separator prefWidth="200.0" />
+                  <Region layoutX="20.0" layoutY="227.0">
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <Label text="Es llave primaria?" />
+                  <Region layoutX="20.0" layoutY="227.0">
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <RadioButton fx:id="rbYesPk" mnemonicParsing="false" text="Si">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="radioGroupIsPK" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <Region layoutX="20.0" layoutY="227.0">
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <RadioButton fx:id="rbNotPk" layoutX="20.0" layoutY="268.0" mnemonicParsing="false" selected="true" text="No" toggleGroup="$radioGroupIsPK" />
+                  <Region layoutX="20.0" layoutY="285.0">
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+                  <Button mnemonicParsing="false" onAction="#modificarPressed" text="Guardar Cambios" />
+                  <Region layoutX="20.0" layoutY="331.0">
+                     <padding>
+                        <Insets bottom="6.0" top="6.0" />
+                     </padding>
+                  </Region>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+   </center>
+</BorderPane>

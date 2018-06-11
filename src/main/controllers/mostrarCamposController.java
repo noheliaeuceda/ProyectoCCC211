@@ -15,12 +15,9 @@ public class mostrarCamposController extends mainController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fileManager = Main.getFileManager();
-
-        for (Field f : fileManager.getMetadata().getFieldsData()) {
-            listShowFields.getItems().add(f);
-        }
-
         statusBarLabel.setText("Archivo abierto: " + fileManager.getFilename());
+        for (Field f : fileManager.getMetadata().getFieldsData())
+            listShowFields.getItems().add(f);
     }
 
     public void returnPressed () throws IOException {

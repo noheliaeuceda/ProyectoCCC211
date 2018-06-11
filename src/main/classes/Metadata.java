@@ -101,6 +101,10 @@ public class Metadata {
         length += field.size;
     }
 
+    public void setField(int pos, Field field) {
+        fieldsData.set(pos, field);
+    }
+
     public boolean hasPK() {
         for (Field f : fieldsData)
             if (f.primaryKey)
