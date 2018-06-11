@@ -6,6 +6,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import main.Main;
 import main.classes.Field;
+import main.classes.FileManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -90,10 +91,6 @@ public class modificarCamposController extends mainController {
         txtSize.setText("");
         rbTypeString.setSelected(true);
         rbNotPk.setSelected(true);
-    }
-
-    public void returnPressed () throws IOException {
-        changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
     }
 
 }

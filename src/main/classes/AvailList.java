@@ -14,12 +14,12 @@ public class AvailList {
         public int pos;
         public Node next;
 
-        public Node(int pos){
+        public Node(int pos) {
             this.pos = pos;
             next = null;
         }
 
-        public String toString(){
+        public String toString() {
             return "#" + pos;
         }
     }
@@ -45,7 +45,7 @@ public class AvailList {
         } catch (Exception e) { }
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return first == null;
     }
 
@@ -73,19 +73,7 @@ public class AvailList {
         return head;
     }
 
-    public Node at(int pos) {
-        // get a node from the list at a given position
-        Node temp = first;
-        if (pos >= 0 && pos < size)
-            for (int i = 0; i < size; i++)
-                if (i == pos)
-                    return temp;
-                else
-                    temp = temp.next;
-        return null;
-    }
-
-    public void print(){
+    public String toString() {
         StringBuilder result = new StringBuilder("Avail List:\n");
         Node temp = first;
         while (temp != null) {
@@ -93,7 +81,7 @@ public class AvailList {
             result.append('\n');
             temp = temp.next;
         }
-        System.out.println(result.toString());
+        return result.toString();
     }
 
 }

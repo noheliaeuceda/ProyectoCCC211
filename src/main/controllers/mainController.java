@@ -41,8 +41,8 @@ public class mainController implements Initializable {
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent() && !result.get().equals("")) {
-            fileManager = new FileManager(new File(result.get() + ".ed2"));
-            statusBarLabel.setText("Archivo abierto: " + fileManager.getFilename());
+            Main.setFileManager(new FileManager(new File(result.get() + ".ed2")));
+            changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
         }
     }
 
@@ -64,8 +64,6 @@ public class mainController implements Initializable {
         if (opened != null) {
             Main.setFileManager(new FileManager(opened));
             changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
-        } else {
-            System.out.println("Error ?");
         }
     }
 
@@ -90,7 +88,6 @@ public class mainController implements Initializable {
 
     public void menuCamposAgregar() throws IOException {
         if (fileManager != null) {
-            Main.setFileManager(fileManager);
             changeStage("../view/agregarCampos.fxml", "Agregar Campos", 370, 482);
         } else {
             showWarning("No tiene ningun archivo abierto!");
@@ -99,7 +96,6 @@ public class mainController implements Initializable {
 
     public void menuCamposListar() throws IOException {
         if (fileManager != null) {
-            Main.setFileManager(fileManager);
             changeStage("../view/mostrarCampos.fxml", "Agregar Campos", 370, 442);
         } else {
             showWarning("No tiene ningun archivo abierto!");
@@ -108,7 +104,6 @@ public class mainController implements Initializable {
 
     public void menuCamposModificar() throws IOException {
         if (fileManager != null) {
-            Main.setFileManager(fileManager);
             changeStage("../view/modificarCampos.fxml", "Modificar Campos", 800, 482);
         } else {
             showWarning("No tiene ningun archivo abierto!");
@@ -117,7 +112,6 @@ public class mainController implements Initializable {
 
     public void menuCamposBorrar() throws IOException {
         if (fileManager != null) {
-            Main.setFileManager(fileManager);
             changeStage("../view/borrarCampos.fxml", "Borrar Campos", 370, 442);
         } else {
             showWarning("No tiene ningun archivo abierto!");

@@ -61,7 +61,7 @@ public class Metadata {
             raFile = new RandomAccessFile(file, "rw");
             raFile.writeUTF(Integer.toString(fieldsData.size()) + '\n');
 
-            for (Field f : fieldsData){
+            for (Field f : fieldsData) {
                 raFile.writeUTF(Integer.toString(f.size));
                 raFile.writeUTF(f.type);
                 raFile.writeUTF(f.name);
@@ -127,7 +127,7 @@ public class Metadata {
         return result.toString();
     }
 
-    public int getFirstDeleted(){
+    public int getFirstDeleted() {
         return firstDeleted;
     }
 
@@ -144,15 +144,15 @@ public class Metadata {
         return "*" + strPos + String.format("%" + (length - 3 - strPos.length()) + "s", "\n");
     }
 
-    public ArrayList<Field> getFieldsData(){
+    public ArrayList<Field> getFieldsData() {
         return fieldsData;
     }
 
-    public int getFieldCount(){
+    public int getFieldCount() {
         return fieldCount;
     }
 
-    public boolean exists(){
+    public boolean exists() {
         return file.exists();
     }
 

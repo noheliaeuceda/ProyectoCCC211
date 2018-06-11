@@ -17,7 +17,7 @@ public class Record {
         this.fields = fields;
     }
 
-    public void add(Field field){
+    public void add(Field field) {
         fields.add(field);
     }
 
@@ -56,7 +56,7 @@ public class Record {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         // TODO cambiar el toString por algo mas legible
         StringBuilder result = new StringBuilder();
         String pkStr = "";

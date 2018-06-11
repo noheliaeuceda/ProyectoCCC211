@@ -93,7 +93,7 @@ public class FileManager {
                 pos += f.size;
             }
             return tempRecord;
-        } catch (LongLengthException e){
+        } catch (LongLengthException e) {
             System.out.println("Error creating record! " + e.getMessage());
             return null;
         }
