@@ -200,20 +200,4 @@ public class FileManager {
         return metadata;
     }
 
-    // deprecados
-    public int getFieldCount() {
-        return metadata.getFieldCount();
-    }
-
-    public Field at(int pos) {
-        return metadata.at(pos);
-    }
-
-    public boolean hasMetadata(){
-        return metadata.exists();
-    }
-
-    public void printAvailList(){
-        aList.print();
-    }
 }

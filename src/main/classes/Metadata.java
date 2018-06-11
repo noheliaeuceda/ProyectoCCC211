@@ -144,6 +144,10 @@ public class Metadata {
         return "*" + strPos + String.format("%" + (length - 3 - strPos.length()) + "s", "\n");
     }
 
+    public ArrayList<Field> getFieldsData(){
+        return fieldsData;
+    }
+
     public int getFieldCount(){
         return fieldCount;
     }
@@ -159,7 +163,4 @@ public class Metadata {
             return fieldsData.get(pos);
     }
 
-    public ArrayList<Field> getFieldsData(){
-        return fieldsData;
-    }
 }
