@@ -31,7 +31,7 @@
                 <Menu mnemonicParsing="false" text="Registros">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosCargar" text="Cargar Prueba" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosAgregar" text="Introducir" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosAgregar" text="Agregar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosModificar" text="Modificar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBorrar" text="Borrar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosMostrar" text="Listar" />

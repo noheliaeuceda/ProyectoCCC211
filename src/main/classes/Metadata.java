@@ -66,7 +66,7 @@ public class Metadata {
                 raFile.writeUTF(f.type);
                 raFile.writeUTF(f.name);
                 raFile.writeUTF(Boolean.toString(f.primaryKey) + '\n');
-                addField(f);
+//                addField(f);
             }
             raFile.writeUTF("-1");
             raFile.close();

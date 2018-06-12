@@ -3,6 +3,7 @@ package main.controllers;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
+import main.classes.Field;
 import main.classes.FileManager;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,12 +12,14 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import main.Main;
+import main.classes.Record;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 public class mainController implements Initializable {
 
@@ -70,6 +73,7 @@ public class mainController implements Initializable {
     public void menuArchivoSalvar() {
         if (fileManager != null) {
             fileManager.save();
+            showSuccess("Archivo guardado con exito!");
         } else {
             showWarning("No tiene ningun archivo abierto!");
         }
@@ -197,7 +201,7 @@ public class mainController implements Initializable {
 
     public void menuEstandarizacionXML() {
         if (fileManager != null) {
-
+//            generarPrueba();
         } else {
             showWarning("No tiene ningun archivo abierto!");
         }
@@ -226,6 +230,32 @@ public class mainController implements Initializable {
         primaryStage.setTitle(title);
         primaryStage.setScene(new Scene(root, width, height));
         primaryStage.show();
+    }
+
+    public void generarPrueba() {
+        try {
+            Record tempRecord;
+            int numero = 11800000;
+            String nombre = "Nombre #";
+            String apellido = "Apellido #";
+            int clases = 0;
+            float pagos = 0.15f;
+            for (int i = 0; i < 10000; i++) {
+                tempRecord = new Record();
+                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(0), Integer.toString(numero + i)));
+                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(1), nombre));
+                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(2), apellido + i));
+                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(3), Integer.toString(clases)));
+                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(4), Float.toString(pagos)));
+                if (clases > 75)
+                    clases = 0;
+                if (pagos > 500000)
+                    pagos = 0.13f;
+                clases++;
+                pagos += 1234.37;
+                fileManager.addRecord(tempRecord);
+            }
+        } catch (Exception e) { }
     }
 
 }
