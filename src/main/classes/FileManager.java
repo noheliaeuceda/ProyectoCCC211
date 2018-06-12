@@ -1,5 +1,6 @@
 package main.classes;
 
+import javafx.scene.control.ListView;
 import main.exceptions.LongLengthException;
 
 import java.io.*;
@@ -11,19 +12,19 @@ public class FileManager {
     private AvailList aList;
     private Metadata metadata;
 
+    private ArrayList<Record> records;
+
     public FileManager(File file) {
         this.file = file;
+        records = new ArrayList<>();
         metadata = new Metadata(new File(file.getPath() + ".metadata"));
         aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), file);
         if (!file.exists())
             touch();
-//        load lo utilizabamos para cargar la lista en el interfaz, pero ya no mostramos la lista
-//        load();
     }
 
-    public void add(ArrayList<Field> fields) {
-        Record record = new Record(fields);
-        if (!pkExists(record.getPK()) && record.prettyString().charAt(0) != '*') {
+    private void writeFile() {
+        for (Record record : records)
             if (aList.isEmpty()) {
                 append(record);
             } else {
@@ -34,10 +35,38 @@ public class FileManager {
                 else
                     metadata.updateLastDeleted(aList.first.pos);
             }
-        }
     }
 
-    public void remove(int pos) {
+    public void delete(Field field, String criteria) {
+        // TODO reemplazar por B-Tree:
+        ArrayList<Integer> removeThese = new ArrayList<>();
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file, "r");
+            try {
+                int i = 0;
+                Record tempRecord;
+                while (true) {
+                    tempRecord = parse(raFile.readUTF());
+                    if (tempRecord == null)
+                        continue;
+                    for (Field f : tempRecord.getFields())
+                        if (field.equals(f) && f.getContent().trim().equals(criteria))
+                            removeThese.add(i);
+                    i++;
+                }
+            } catch (EOFException e) { }
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error! " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        for (int num : removeThese)
+            remove(num);
+    }
+
+    private void remove(int pos) {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file, "rw");
@@ -60,30 +89,14 @@ public class FileManager {
         }
     }
 
-    private void load() {
-        if (file.exists()) {
-            Record tempRecord;
-            RandomAccessFile raFile;
-            try {
-                raFile = new RandomAccessFile(file, "r");
-                try {
-                    while (true) {
-                        tempRecord = parse(raFile.readUTF());
-                    }
-                } catch (EOFException e) { }
-
-                raFile.close();
-            } catch (Exception e) {
-                System.out.println("Error reading from file " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
-
     private Record parse(String data) {
+        if (data.charAt(0) == '*')
+            return null;
+
         int pos;
         Record tempRecord;
         Field tempField;
+
         try {
             tempRecord = new Record();
             pos = 0;
@@ -136,27 +149,63 @@ public class FileManager {
         }
     }
 
-    private boolean pkExists(String pk) {
+    private boolean freePK(String pk) {
+        // TODO reemplazar por B-Tree
+        // revisar en archivo
         Record tempRecord;
-        if (file.exists()) {
-            RandomAccessFile raFile;
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file, "r");
             try {
-                raFile = new RandomAccessFile(file, "r");
-                try {
-                    while (true) {
-                        tempRecord = parse(raFile.readUTF());
-                        if (tempRecord.getPK().equals(pk))
-                            return true;
-                    }
-                } catch (EOFException e) { }
+                while (true) {
+                    tempRecord = parse(raFile.readUTF());
+                    if (tempRecord == null)
+                        continue;
+                    if (tempRecord.getPK().equals(pk))
+                        return false;
+                }
+            } catch (EOFException e) { }
 
-                raFile.close();
-            } catch (Exception e) {
-                System.out.println("Error reading from file " + e.getMessage());
-                e.printStackTrace();
-            }
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error reading from file " + e.getMessage());
+            e.printStackTrace();
         }
-        return false;
+        // revisar en registros en memoria
+        for (Record r : records)
+            if (r.getPK().equals(pk))
+                return false;
+        return true;
+    }
+
+    public void loadList(ListView list) {
+        Record tempRecord;
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file, "r");
+            try {
+                while (true) {
+                    tempRecord = parse(raFile.readUTF());
+                    list.getItems().add(tempRecord);
+                }
+            } catch (EOFException e) { }
+
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error reading from file " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void addRecord(Record record) {
+        if (freePK(record.getPK()) && record.prettyString().charAt(0) != '*') {
+            records.add(record);
+        }
+    }
+
+    public void save() {
+        metadata.writeMetadata();
+        writeFile();
     }
 
     public boolean exportToCSV() {

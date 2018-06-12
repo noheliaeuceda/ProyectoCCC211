@@ -39,6 +39,16 @@ public class Field {
             this.content = content;
     }
 
+    public boolean equals(Field other) {
+        if (other == null)
+            return false;
+
+        return primaryKey == other.primaryKey
+                && size == other.size
+                && type.trim().equals(other.type.trim())
+                && name.trim().equals(other.name.trim());
+    }
+
     @Override
     public String toString() {
         if (content == null)

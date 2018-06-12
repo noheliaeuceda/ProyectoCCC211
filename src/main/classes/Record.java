@@ -31,6 +31,10 @@ public class Record {
         return pk;
     }
 
+    public ArrayList<Field> getFields() {
+        return fields;
+    }
+
     public String prettyString() {
         StringBuilder result = new StringBuilder();
         String pkStr = "";

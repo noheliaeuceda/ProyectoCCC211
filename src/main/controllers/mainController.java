@@ -68,10 +68,8 @@ public class mainController implements Initializable {
     }
 
     public void menuArchivoSalvar() {
-//      TODO esto
-//      Salvará la definición de campos como encabezado del archivo y luego colocará los datos de los registros
         if (fileManager != null) {
-            System.out.println("guardar todos los cambios");
+            fileManager.save();
         } else {
             showWarning("No tiene ningun archivo abierto!");
         }
@@ -119,12 +117,12 @@ public class mainController implements Initializable {
     }
 
     public void menuRegistrosCargar() throws IOException {
-        menuArchivoCargar();
+        changeStage("../view/cargarRegistros.fxml", "Cargar Registros", 370, 442);
     }
 
-    public void menuRegistrosIntroducir() {
+    public void menuRegistrosAgregar() throws IOException {
         if (fileManager != null) {
-
+            changeStage("../view/agregarRegistros.fxml", "Agregar Registros", 370, 482);
         } else {
             showWarning("No tiene ningun archivo abierto!");
         }
@@ -138,17 +136,17 @@ public class mainController implements Initializable {
         }
     }
 
-    public void menuRegistrosBorrar() {
+    public void menuRegistrosBorrar() throws IOException {
         if (fileManager != null) {
-
+            changeStage("../view/borrarRegistros.fxml", "Borrar Registros", 370, 482);
         } else {
             showWarning("No tiene ningun archivo abierto!");
         }
     }
 
-    public void menuRegistrosListar() {
+    public void menuRegistrosMostrar() throws IOException {
         if (fileManager != null) {
-
+            changeStage("../view/mostrarRegistros.fxml", "Mostrar Registros", 370, 482);
         } else {
             showWarning("No tiene ningun archivo abierto!");
         }

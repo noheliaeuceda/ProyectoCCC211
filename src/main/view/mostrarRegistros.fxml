@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="442.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.borrarCamposController">
+<BorderPane prefHeight="442.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.mostrarRegistrosController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
@@ -31,10 +31,10 @@
                 <Menu mnemonicParsing="false" text="Registros">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosCargar" text="Cargar Prueba" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosAgregar" text="Introducir" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosAgregar" text="Agregar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosModificar" text="Modificar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBorrar" text="Borrar" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosMostrar" text="Listar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosMostrar" text="Mostrar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosCruzar" text="Cruzar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBuscar" text="Buscar" />
                     </items>
@@ -67,24 +67,14 @@
             </opaqueInsets>
         </HBox>
     </bottom>
-    <center>
-        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
-            <children>
-                <ListView fx:id="listShowFields" />
-                <Region>
-                    <padding>
-                        <Insets bottom="10.0" top="10.0" />
-                    </padding>
-                </Region>
-            <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#eliminarPressed" text="Eliminar" />
-               </children>
-            </HBox>
-            </children>
-        </VBox>
-    </center>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <children>
+            <ListView fx:id="listShowRecords" />
+         </children>
+      </VBox>
+   </center>
 </BorderPane>

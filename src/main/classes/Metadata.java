@@ -54,7 +54,7 @@ public class Metadata {
         }
     }
 
-    private void writeMetadata() {
+    public void writeMetadata() {
         // TODO truncate file
         RandomAccessFile raFile;
         try {

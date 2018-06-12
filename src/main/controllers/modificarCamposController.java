@@ -6,9 +6,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import main.Main;
 import main.classes.Field;
-import main.classes.FileManager;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
