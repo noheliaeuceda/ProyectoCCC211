@@ -23,7 +23,7 @@
                 <Menu mnemonicParsing="false" text="Campos">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#menuCamposAgregar" text="Agregar" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuCamposListar" text="Listar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuCamposMostrar" text="Mostrar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuCamposModificar" text="Modificar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuCamposBorrar" text="Borrar" />
                     </items>

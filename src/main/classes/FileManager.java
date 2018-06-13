@@ -11,6 +11,7 @@ public class FileManager {
     private File file;
     private AvailList aList;
     private Metadata metadata;
+    private boolean hasRecords;
 
     private ArrayList<Record> records;
 
@@ -19,8 +20,12 @@ public class FileManager {
         records = new ArrayList<>();
         metadata = new Metadata(new File(file.getPath() + ".metadata"));
         aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), file);
-        if (!file.exists())
+        if (!file.exists()) {
+            hasRecords = false;
             touch();
+        } else {
+            hasRecords = true;
+        }
     }
 
     private void writeFile() {
@@ -35,10 +40,12 @@ public class FileManager {
                 else
                     metadata.updateLastDeleted(aList.first.pos);
             }
+        records.clear();
     }
 
     public void delete(Field field, String criteria) {
         // TODO reemplazar por B-Tree:
+        // TODO (?) ver si se puede borrar mas de un registro a la vez
         ArrayList<Integer> removeThese = new ArrayList<>();
         RandomAccessFile raFile;
         try {
@@ -51,7 +58,7 @@ public class FileManager {
                     if (tempRecord == null)
                         continue;
                     for (Field f : tempRecord.getFields())
-                        if (field.equals(f) && f.getContent().trim().equals(criteria))
+                        if (field.equals(f) && f.getContent().equals(criteria))
                             removeThese.add(i);
                     i++;
                 }
@@ -197,11 +204,43 @@ public class FileManager {
         }
     }
 
-    public void addRecord(Record record) {
-        if (freePK(record.getPK()) && record.prettyString().charAt(0) != '*') {
-            records.add(record);
+    public Object[] search(String pk) {
+        // TODO reemplazar por B-Tree
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file, "r");
+            try {
+                Record record;
+                int pos = 0;
+                while (true) {
+                    record = parse(raFile.readUTF());
+                    if (record != null && record.getPK().equals(pk))
+                        return new Object[]{pos, record};
+                    pos++;
+                }
+            } catch (EOFException e) { }
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error! " + e.getMessage());
+            e.printStackTrace();
         }
+        return null;
     }
+
+    public boolean addRecord(Record record) {
+        if (!hasRecords)
+            hasRecords = true;
+        if (freePK(record.getPK())) {
+            records.add(record);
+            return true;
+        }
+        return false;
+    }
+
+    public void setRecord(int pos, Record record) {
+        rewrite(record, pos);
+    }
+
 
     public void save() {
         metadata.writeMetadata();
@@ -239,6 +278,14 @@ public class FileManager {
             return false;
         }
         return true;
+    }
+
+    public boolean hasRecords() {
+        return hasRecords;
+    }
+
+    public ArrayList<Record> getRecords() {
+        return records;
     }
 
     public String getFilename() {

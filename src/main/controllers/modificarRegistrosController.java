@@ -14,10 +14,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class agregarRegistrosController extends mainController {
+public class modificarRegistrosController extends mainController {
+
+    // TODO (?) ver si se puede modificar la llave primaria
 
     public VBox vboxMain;
+    public TextField txtPK;
+    private TextField txtModPK;
     private ArrayList<TextField> textFields;
+    private int modifiedPos;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -44,10 +49,33 @@ public class agregarRegistrosController extends mainController {
             padding = new Region();
             padding.setPadding(new Insets(6, 0, 6, 0));
             vboxMain.getChildren().add(padding);
+
+            if (f.primaryKey)
+                txtModPK = textField;
         }
+        vboxMain.setDisable(true);
     }
 
-    public void agregarPressed() {
+    public void selectPressed() {
+        Object[] result = fileManager.search(txtPK.getText());
+        if (result == null) {
+            showWarning("No existe un registro con esa llave primaria!");
+        } else {
+            Record record = (Record) result[1];
+            modifiedPos = (int) result[0];
+            vboxMain.setDisable(false);
+            txtModPK.setDisable(true);
+
+            String temp;
+            for (int i = 0; i < textFields.size(); i++) {
+                temp = record.getFields().get(i).getContent();
+                textFields.get(i).setText(temp);
+            }
+        }
+        txtPK.setText("");
+    }
+
+    public void modificarPressed() {
         Field field;
         String text;
         boolean error = false;
@@ -86,14 +114,13 @@ public class agregarRegistrosController extends mainController {
         }
 
         if (!error) {
-            if (fileManager.addRecord(record))
-                showSuccess("Registro agregado con exito!");
-            else
-                showWarning("Ya existe una llave primaria con el valor que ingreso!");
+            fileManager.setRecord(modifiedPos, record);
+            showSuccess("Registro agregado con exito!");
         } else {
             showWarning("Por favor no deje campos en blanco o ingrese asteriscos al inicio de un campo!");
         }
 
+        vboxMain.setDisable(true);
         for (TextField textField : textFields)
             textField.setText("");
     }

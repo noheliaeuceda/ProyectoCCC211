@@ -1,6 +1,7 @@
 package main.controllers;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import main.classes.Field;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
 
 public class mainController implements Initializable {
 
@@ -71,11 +71,11 @@ public class mainController implements Initializable {
     }
 
     public void menuArchivoSalvar() {
-        if (fileManager != null) {
+        if (fileManager == null) {
+            showWarning("No tiene ningun archivo abierto!");
+        } else {
             fileManager.save();
             showSuccess("Archivo guardado con exito!");
-        } else {
-            showWarning("No tiene ningun archivo abierto!");
         }
     }
 
@@ -89,34 +89,40 @@ public class mainController implements Initializable {
     }
 
     public void menuCamposAgregar() throws IOException {
-        if (fileManager != null) {
-            changeStage("../view/agregarCampos.fxml", "Agregar Campos", 370, 482);
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (fileManager.hasRecords()) {
+            showWarning("No puede modificar los campos si ya existen registros!");
+        } else {
+            changeStage("../view/agregarCampos.fxml", "Agregar Campos", 370, 482);
         }
     }
 
-    public void menuCamposListar() throws IOException {
-        if (fileManager != null) {
-            changeStage("../view/mostrarCampos.fxml", "Agregar Campos", 370, 442);
-        } else {
+    public void menuCamposMostrar() throws IOException {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+            changeStage("../view/mostrarCampos.fxml", "Mostrar Campos", 370, 442);
         }
     }
 
     public void menuCamposModificar() throws IOException {
-        if (fileManager != null) {
-            changeStage("../view/modificarCampos.fxml", "Modificar Campos", 800, 482);
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (fileManager.hasRecords()) {
+            showWarning("No puede modificar los campos si ya existen registros!");
+        } else {
+            changeStage("../view/modificarCampos.fxml", "Modificar Campos", 800, 482);
         }
     }
 
     public void menuCamposBorrar() throws IOException {
-        if (fileManager != null) {
-            changeStage("../view/borrarCampos.fxml", "Borrar Campos", 370, 442);
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (fileManager.hasRecords()) {
+            showWarning("No puede modificar los campos si ya existen registros!");
+        } else {
+            changeStage("../view/borrarCampos.fxml", "Borrar Campos", 370, 442);
         }
     }
 
@@ -125,85 +131,89 @@ public class mainController implements Initializable {
     }
 
     public void menuRegistrosAgregar() throws IOException {
-        if (fileManager != null) {
-            changeStage("../view/agregarRegistros.fxml", "Agregar Registros", 370, 482);
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+            changeStage("../view/agregarRegistros.fxml", "Agregar Registros", 370, 482);
         }
     }
 
-    public void menuRegistrosModificar() {
-        if (fileManager != null) {
-
-        } else {
+    public void menuRegistrosModificar() throws IOException {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (fileManager.getRecords().size() > 0) {
+            if (showConfirmation("Para realizar esta operacion tiene que guardar los cambios en el archivo, desea continuar?")) {
+                fileManager.save();
+                changeStage("../view/modificarRegistros.fxml", "Modificar Registros", 370, 482);
+            }
+        } else {
+            changeStage("../view/modificarRegistros.fxml", "Modificar Registros", 370, 482);
         }
     }
 
     public void menuRegistrosBorrar() throws IOException {
-        if (fileManager != null) {
-            changeStage("../view/borrarRegistros.fxml", "Borrar Registros", 370, 482);
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+            changeStage("../view/borrarRegistros.fxml", "Borrar Registros", 370, 482);
         }
     }
 
     public void menuRegistrosMostrar() throws IOException {
-        if (fileManager != null) {
-            changeStage("../view/mostrarRegistros.fxml", "Mostrar Registros", 370, 482);
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+            changeStage("../view/mostrarRegistros.fxml", "Mostrar Registros", 370, 482);
         }
     }
 
     public void menuRegistrosCruzar() {
-        if (fileManager != null) {
-
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+
         }
     }
 
     public void menuRegistrosBuscar() {
-        if (fileManager != null) {
-
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+
         }
     }
 
     public void menuIndicesCrear() {
-        if (fileManager != null) {
-
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+
         }
     }
 
     public void menuIndicesReindexar() {
-        if (fileManager != null) {
-
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+
         }
     }
 
     public void menuEstandarizacionExcel() {
-        if (fileManager != null) {
-            if (fileManager.exportToCSV())
-                showSuccess("Archivo de Excel guardado con exito!");
-            else
-                showWarning("Hubo un error al crear el archivo!");
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (fileManager.exportToCSV()) {
+            showSuccess("Archivo de Excel guardado con exito!");
+        } else {
+            showWarning("Hubo un error al crear el archivo!");
         }
     }
 
     public void menuEstandarizacionXML() {
-        if (fileManager != null) {
-//            generarPrueba();
-        } else {
+        if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else {
+//            generarPrueba();
         }
     }
 
@@ -221,6 +231,15 @@ public class mainController implements Initializable {
         alert.setHeaderText("Operacion exitosa!");
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public static boolean showConfirmation(String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Cuadro de Confirmacion");
+        alert.setHeaderText("Por favor confirme la operacion");
+        alert.setContentText(message);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 
     public void changeStage(String fxml, String title, int width, int height) throws IOException {

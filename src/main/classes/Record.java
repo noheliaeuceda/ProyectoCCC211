@@ -13,10 +13,6 @@ public class Record {
         fields = new ArrayList<>();
     }
 
-    public Record(ArrayList<Field> fields) {
-        this.fields = fields;
-    }
-
     public void add(Field field) {
         fields.add(field);
     }
@@ -51,7 +47,7 @@ public class Record {
     public String toCSV() {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < fields.size(); i++) {
-            result.append(fields.get(i).getContent().trim());
+            result.append(fields.get(i).getContent());
             if (i != fields.size() - 1)
                 result.append(',');
         }

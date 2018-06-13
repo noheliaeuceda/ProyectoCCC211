@@ -13,8 +13,8 @@ public class Field {
     public Field(int size, String type, String name, boolean primaryKey) {
         content = null;
         this.size = size;
-        this.type = type;
-        this.name = name;
+        this.type = type.trim();
+        this.name = name.trim();
         this.primaryKey = primaryKey;
     }
 
@@ -31,6 +31,7 @@ public class Field {
     }
 
     public void setContent(String content) throws LongLengthException {
+        content = content.trim();
         if (content.length() > size)
             throw new LongLengthException(
                     "Field length (" + content.length() + ") is bigger than max size allowed (" + size + ")!"
@@ -45,8 +46,8 @@ public class Field {
 
         return primaryKey == other.primaryKey
                 && size == other.size
-                && type.trim().equals(other.type.trim())
-                && name.trim().equals(other.name.trim());
+                && type.equals(other.type)
+                && name.equals(other.name);
     }
 
     @Override
