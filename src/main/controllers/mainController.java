@@ -167,19 +167,19 @@ public class mainController implements Initializable {
         }
     }
 
-    public void menuRegistrosCruzar() {
+    public void menuRegistrosCruzar() throws IOException {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
         } else {
-
+            changeStage("../view/cruzarArchivos.fxml", "Cruzar Registros", 370, 482);
         }
     }
 
-    public void menuRegistrosBuscar() {
+    public void menuRegistrosBuscar() throws IOException {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
         } else {
-
+            changeStage("../view/buscarRegistros.fxml", "Buscar Registros", 370, 482);
         }
     }
 

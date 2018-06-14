@@ -204,6 +204,28 @@ public class FileManager {
         }
     }
 
+    public void loadList(ListView list, Field field, String criteria) {
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file, "r");
+            try {
+                Record tempRecord;
+                while (true) {
+                    tempRecord = parse(raFile.readUTF());
+                    if (tempRecord == null)
+                        continue;
+                    for (Field f : tempRecord.getFields())
+                        if (field.equals(f) && f.getContent().equals(criteria))
+                            list.getItems().add(tempRecord);
+                }
+            } catch (EOFException e) { }
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error! " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public Object[] search(String pk) {
         // TODO reemplazar por B-Tree
         RandomAccessFile raFile;
