@@ -76,19 +76,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
          <children>
-            <Label text="Campo por el que se va a buscar" />
-            <Region layoutX="20.0" layoutY="54.0">
-               <padding>
-                  <Insets bottom="5.0" top="5.0" />
-               </padding>
-            </Region>
-            <ComboBox fx:id="comboField" />
-            <Region layoutX="20.0" layoutY="37.0">
-               <padding>
-                  <Insets bottom="5.0" top="5.0" />
-               </padding>
-            </Region>
-            <Label text="Criterio para mostrar registros" />
+            <Label text="Llave primaria del registro" />
             <Region layoutX="20.0" layoutY="37.0">
                <padding>
                   <Insets bottom="5.0" top="5.0" />
@@ -100,7 +88,17 @@
                   <Insets bottom="5.0" top="5.0" />
                </padding>
             </Region>
-            <Button mnemonicParsing="false" onAction="#buscarPressed" text="Buscar" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#buscarPressed" text="Buscar" />
+                  <Region>
+                     <padding>
+                        <Insets left="6.0" right="6.0" />
+                     </padding>
+                  </Region>
+                  <Button mnemonicParsing="false" onAction="#limpiarPressed" text="Limpiar Lista" />
+               </children>
+            </HBox>
             <Region layoutX="20.0" layoutY="134.0">
                <padding>
                   <Insets bottom="5.0" top="5.0" />

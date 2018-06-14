@@ -126,6 +126,41 @@ public class Metadata {
         return result.toString();
     }
 
+    public boolean equals(Metadata other) {
+        if (fieldCount != other.fieldCount)
+            return false;
+
+        for (int i = 0; i < fieldCount; i++)
+            if (!fieldsData.get(i).equals(other.fieldsData.get(i)))
+                return false;
+        return true;
+    }
+
+    public void copy(Metadata other) {
+        RandomAccessFile mainFile;
+        int tSize;
+        boolean tPrimaryKey;
+        String tType, tName;
+        try {
+            mainFile = new RandomAccessFile(file, "r");
+            other.fieldCount = Integer.valueOf(mainFile.readUTF().trim());
+
+            for (int i = 0; i < other.fieldCount; i++) {
+                tSize = Integer.valueOf(mainFile.readUTF().trim());
+                tType = mainFile.readUTF().trim();
+                tName = mainFile.readUTF().trim();
+                tPrimaryKey = Boolean.valueOf(mainFile.readUTF().trim());
+                other.addField(new Field(tSize, tType, tName, tPrimaryKey));
+            }
+            other.firstDeleted = Integer.valueOf(mainFile.readUTF().trim());
+            mainFile.close();
+            other.writeMetadata();
+        } catch (Exception e) {
+            System.out.println("Error reading from file " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public int getFirstDeleted() {
         return firstDeleted;
     }

@@ -44,26 +44,14 @@ public class mainController implements Initializable {
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent() && !result.get().equals("")) {
-            Main.setFileManager(new FileManager(new File(result.get() + ".ed2")));
+            Main.setFileManager(new FileManager(new File(
+                    System.getProperty("user.dir") + "/files/" + result.get() + ".ed2")));
             changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
         }
     }
 
     public void menuArchivoCargar() throws IOException {
-        // file chooser
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Cargar Archivo");
-
-        // filtros del filechooser para solo mostrar archivos *.ed2
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
-                "Archivo Estructuras de Datos 2 (*.ed2)", "*.ed2");
-        fileChooser.getExtensionFilters().add(filter);
-
-        // directorio inicial, lo seteamos al directorio del proyecto
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        File opened = fileChooser.showOpenDialog(Main.getPrimaryStage());
-
-        // cargar el archivo
+        File opened = openFile();
         if (opened != null) {
             Main.setFileManager(new FileManager(opened));
             changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
@@ -249,6 +237,21 @@ public class mainController implements Initializable {
         primaryStage.setTitle(title);
         primaryStage.setScene(new Scene(root, width, height));
         primaryStage.show();
+    }
+
+    public File openFile() {
+        // file chooser
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Cargar Archivo");
+
+        // filtros del filechooser para solo mostrar archivos *.ed2
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
+                "Archivo Estructuras de Datos 2 (*.ed2)", "*.ed2");
+        fileChooser.getExtensionFilters().add(filter);
+
+        // directorio inicial, lo seteamos al directorio del proyecto
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        return fileChooser.showOpenDialog(Main.getPrimaryStage());
     }
 
     public void generarPrueba() {

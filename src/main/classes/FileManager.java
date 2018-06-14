@@ -11,8 +11,6 @@ public class FileManager {
     private File file;
     private AvailList aList;
     private Metadata metadata;
-    private boolean hasRecords;
-
     private ArrayList<Record> records;
 
     public FileManager(File file) {
@@ -20,12 +18,8 @@ public class FileManager {
         records = new ArrayList<>();
         metadata = new Metadata(new File(file.getPath() + ".metadata"));
         aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), file);
-        if (!file.exists()) {
-            hasRecords = false;
+        if (!file.exists())
             touch();
-        } else {
-            hasRecords = true;
-        }
     }
 
     private void writeFile() {
@@ -43,37 +37,7 @@ public class FileManager {
         records.clear();
     }
 
-    public void delete(Field field, String criteria) {
-        // TODO reemplazar por B-Tree:
-        // TODO (?) ver si se puede borrar mas de un registro a la vez
-        ArrayList<Integer> removeThese = new ArrayList<>();
-        RandomAccessFile raFile;
-        try {
-            raFile = new RandomAccessFile(file, "r");
-            try {
-                int i = 0;
-                Record tempRecord;
-                while (true) {
-                    tempRecord = parse(raFile.readUTF());
-                    if (tempRecord == null)
-                        continue;
-                    for (Field f : tempRecord.getFields())
-                        if (field.equals(f) && f.getContent().equals(criteria))
-                            removeThese.add(i);
-                    i++;
-                }
-            } catch (EOFException e) { }
-            raFile.close();
-        } catch (Exception e) {
-            System.out.println("Error! " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        for (int num : removeThese)
-            remove(num);
-    }
-
-    private void remove(int pos) {
+    public void remove(int pos) {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file, "rw");
@@ -157,7 +121,7 @@ public class FileManager {
     }
 
     private boolean freePK(String pk) {
-        // TODO reemplazar por B-Tree
+        // TODO B-Tree
         // revisar en archivo
         Record tempRecord;
         RandomAccessFile raFile;
@@ -204,30 +168,8 @@ public class FileManager {
         }
     }
 
-    public void loadList(ListView list, Field field, String criteria) {
-        RandomAccessFile raFile;
-        try {
-            raFile = new RandomAccessFile(file, "r");
-            try {
-                Record tempRecord;
-                while (true) {
-                    tempRecord = parse(raFile.readUTF());
-                    if (tempRecord == null)
-                        continue;
-                    for (Field f : tempRecord.getFields())
-                        if (field.equals(f) && f.getContent().equals(criteria))
-                            list.getItems().add(tempRecord);
-                }
-            } catch (EOFException e) { }
-            raFile.close();
-        } catch (Exception e) {
-            System.out.println("Error! " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
     public Object[] search(String pk) {
-        // TODO reemplazar por B-Tree
+        // TODO B-Tree
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file, "r");
@@ -250,8 +192,6 @@ public class FileManager {
     }
 
     public boolean addRecord(Record record) {
-        if (!hasRecords)
-            hasRecords = true;
         if (freePK(record.getPK())) {
             records.add(record);
             return true;
@@ -302,8 +242,62 @@ public class FileManager {
         return true;
     }
 
+    public void merge(FileManager first, FileManager second) {
+        first.getMetadata().copy(metadata);
+        RandomAccessFile mainFile, firstFile, secondFile;
+        Record record;
+        String txtRecord;
+        try {
+            mainFile = new RandomAccessFile(file, "rw");
+            firstFile = new RandomAccessFile(first.getFile(), "r");
+            secondFile = new RandomAccessFile(second.getFile(), "r");
+
+            // leer el primer archivo
+            try {
+                while (true) {
+                    txtRecord = firstFile.readUTF();
+                    record = parse(txtRecord);
+                    if (record == null || !freePK(record.getPK()))
+                        continue;
+                    mainFile.writeUTF(txtRecord);
+                }
+            } catch (EOFException e) { }
+
+            // leer el segundo archivo
+            try {
+                while (true) {
+                    txtRecord = secondFile.readUTF();
+                    record = parse(txtRecord);
+                    if (record == null || !freePK(record.getPK()))
+                        continue;
+                    if (txtRecord.charAt(0) != '*')
+                        mainFile.writeUTF(txtRecord);
+                }
+            } catch (EOFException e) { }
+
+            mainFile.close();
+            firstFile.close();
+            secondFile.close();
+        } catch (Exception e) {
+        }
+    }
+
     public boolean hasRecords() {
-        return hasRecords;
+        if (records.size() > 0)
+            return true;
+
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file, "r");
+            raFile.readUTF();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public ArrayList<Record> getRecords() {

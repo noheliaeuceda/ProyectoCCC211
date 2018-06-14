@@ -68,6 +68,46 @@
         </HBox>
     </bottom>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Archivo a mezclar" />
+            <Region layoutX="10.0" layoutY="39.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <HBox>
+               <children>
+                  <Button mnemonicParsing="false" onAction="#abrirPressed" text="Abrir" />
+                  <Region>
+                     <padding>
+                        <Insets left="6.0" right="6.0" />
+                     </padding>
+                  </Region>
+                  <TextField fx:id="txtPath" prefHeight="25.0" prefWidth="295.0" />
+               </children>
+            </HBox>
+            <Region layoutX="10.0" layoutY="51.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <Label text="Nombre del archivo resultante" />
+            <Region>
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <TextField fx:id="txtFilename" />
+            <Region layoutX="10.0" layoutY="27.0">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
+            </Region>
+            <Button mnemonicParsing="false" onAction="#mezclarPressed" text="Mezclar" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding></VBox>
    </center>
 </BorderPane>

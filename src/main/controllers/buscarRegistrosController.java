@@ -1,17 +1,14 @@
 package main.controllers;
 
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import main.Main;
-import main.classes.Field;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class buscarRegistrosController extends mainController {
 
-    public ComboBox comboField;
     public TextField txtPK;
     public ListView listSearch;
 
@@ -19,20 +16,20 @@ public class buscarRegistrosController extends mainController {
     public void initialize(URL location, ResourceBundle resources) {
         fileManager = Main.getFileManager();
         statusBarLabel.setText("Archivo abierto: " + fileManager.getFilename());
-        for (Field f : fileManager.getMetadata().getFieldsData())
-            comboField.getItems().add(f);
     }
 
     public void buscarPressed() {
-        String criteria = txtPK.getText();
-        Field selectedField = (Field) comboField.getSelectionModel().getSelectedItem();
-        if (selectedField != null) {
-            fileManager.loadList(listSearch, selectedField, criteria.trim());
-            showSuccess("Se encontraron " + listSearch.getItems().size() + " elemento(s)!");
+        Object[] result = fileManager.search(txtPK.getText().trim());
+        if (result == null) {
+            showWarning("No existe ningun registro con esa llave primaria!");
         } else {
-            showWarning("Por favor llene todos los campos!");
+            listSearch.getItems().add("Posicion: " + result[0] + ", Informacion: " + result[1]);
+            showSuccess("Operacion realizada con exito!");
         }
         txtPK.setText("");
-        comboField.getSelectionModel().clearSelection();
+    }
+
+    public void limpiarPressed() {
+        listSearch.getItems().clear();
     }
 }

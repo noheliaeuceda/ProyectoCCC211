@@ -34,7 +34,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosAgregar" text="Agregar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosModificar" text="Modificar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBorrar" text="Borrar" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosMostrar" text="Listar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuRegistrosMostrar" text="Mostrar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosCruzar" text="Cruzar" />
                         <MenuItem mnemonicParsing="false" onAction="#menuRegistrosBuscar" text="Buscar" />
                     </items>
@@ -73,19 +73,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
          <children>
-            <Label text="Campo por el que se va a eliminar" />
-            <Region>
-               <padding>
-                  <Insets bottom="6.0" top="6.0" />
-               </padding>
-            </Region>
-            <ComboBox fx:id="comboField" />
-            <Region layoutX="20.0" layoutY="111.0">
-               <padding>
-                  <Insets bottom="6.0" top="6.0" />
-               </padding>
-            </Region>
-            <Label text="Criterio de eliminacion" />
+            <Label text="Llave primaria del registro" />
             <Region layoutX="20.0" layoutY="37.0">
                <padding>
                   <Insets bottom="6.0" top="6.0" />
