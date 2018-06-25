@@ -78,6 +78,7 @@ public class modificarCamposController extends mainController {
             } else {
                 Field t = new Field(size, type, name, primaryKey);
                 fileManager.getMetadata().setField(modifyPos, t);
+                fileManager.save();
                 listShowFields.getItems().set(modifyPos, t);
                 showSuccess("Campo modificado con exito!");
             }

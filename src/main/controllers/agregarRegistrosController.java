@@ -57,6 +57,7 @@ public class agregarRegistrosController extends mainController {
             field = fileManager.getMetadata().at(i);
             text = textFields.get(i).getText();
 
+            // TODO arreglar field siendo null cuando el archivo no se carga explicitamente
             if (text.equals("") || text.charAt(0) == '*' || text.length() > field.size) {
                 error = true;
                 break;

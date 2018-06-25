@@ -201,6 +201,7 @@ public class FileManager {
 
     public boolean addRecord(Record record) {
 //        TODO guardar en el archivo cada vez que se realice una operacion, entonces no ocupariamos guardar en el arbol aqui
+//        TODO quitar variable rrn
         if (freePK(record.getPK())) {
 //            FileIndex index = new FileIndex(record.getPK(), rrn);
             records.add(record);

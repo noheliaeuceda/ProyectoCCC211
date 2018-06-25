@@ -24,6 +24,8 @@ public class borrarCamposController extends mainController {
         Field selectedField = (Field) listShowFields.getSelectionModel().getSelectedItem();
         if (selectedField != null) {
             fileManager.getMetadata().removeField(selectedField);
+            // TODO truncar metadata
+            fileManager.save();
             listShowFields.getItems().remove(pos);
         }
     }
