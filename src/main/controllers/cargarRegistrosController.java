@@ -28,6 +28,7 @@ public class cargarRegistrosController extends mainController {
         String filename = (String) comboTestFiles.getSelectionModel().getSelectedItem();
         if (filename != null) {
             Main.setFileManager(new FileManager(new File("tests/" + filename)));
+            Main.getFileManager().loadTree();
             changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
             showSuccess("Archivo abierto con exito!");
         } else {

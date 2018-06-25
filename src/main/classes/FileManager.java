@@ -18,7 +18,7 @@ public class FileManager {
     private ArrayList<Record> records;
 
     public FileManager(File file) {
-        btree = new Btree(5);
+        btree = new Btree(6);
         rrn = 0;
         this.file = file;
         records = new ArrayList<>();
@@ -40,7 +40,6 @@ public class FileManager {
                     if (tempRecord == null)
                         continue;
                     index = new FileIndex(tempRecord.getPK(), rrn);
-                    System.out.println(index);
                     btree.insert(index.getId(), index);
                     rrn++;
                 }
@@ -188,11 +187,8 @@ public class FileManager {
             record = parse(raFile.readUTF());
             if (record != null) {
                 raFile.close();
-                System.out.println(pos);
-                System.out.println(record);
                 return new Object[]{pos, record};
             } else {
-                System.out.println("The streets are crazy dog");
                 raFile.close();
                 return null;
             }
@@ -204,17 +200,11 @@ public class FileManager {
     }
 
     public boolean addRecord(Record record) {
-//        record.setRrn(rrn);
-//        FileIndex index = new FileIndex(record.getPK(), rrn);
-//        if (freePK(index.getId())) {
-//            btree.insert(index.getId(), index);
-//            records.add(record);
-//            rrn++;
-//            return true;
-//        }
-//        return false;
+//        TODO guardar en el archivo cada vez que se realice una operacion, entonces no ocupariamos guardar en el arbol aqui
         if (freePK(record.getPK())) {
+//            FileIndex index = new FileIndex(record.getPK(), rrn);
             records.add(record);
+//            btree.insert(index.getId(), index);
             return true;
         }
         return false;

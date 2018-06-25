@@ -56,6 +56,8 @@ public class mainController implements Initializable {
         File opened = openFile();
         if (opened != null) {
             Main.setFileManager(new FileManager(opened));
+            Main.getFileManager().loadTree();
+            fileManager.loadTree();
             changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
         }
     }
