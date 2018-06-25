@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Record {
 
     // TODO no dejar al usuario hacer operaciones hasta que se ingrese una llave primaria
-    // TODO verificar que solo hay una llave primaria (se verifica pero en el controlador, no en la clase)
 
     private ArrayList<Field> fields;
 

@@ -23,6 +23,8 @@ import java.util.ResourceBundle;
 
 public class mainController implements Initializable {
 
+    // TODO confirmar si quiere guardar cambios todo antes de cerrar el programa
+
     protected FileManager fileManager;
     public Label statusBarLabel;
 
@@ -175,7 +177,8 @@ public class mainController implements Initializable {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
         } else {
-
+            fileManager.loadTree();
+            showSuccess("Se ha indexado en el arbol!");
         }
     }
 
@@ -183,7 +186,8 @@ public class mainController implements Initializable {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
         } else {
-
+            fileManager.loadTree();
+            showSuccess("Se ha indexado en el arbol!");
         }
     }
 

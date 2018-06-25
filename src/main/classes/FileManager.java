@@ -1,6 +1,8 @@
 package main.classes;
 
 import javafx.scene.control.ListView;
+import main.classes.btree.Btree;
+import main.classes.btree.FileIndex;
 import main.exceptions.LongLengthException;
 
 import java.io.*;
@@ -8,18 +10,46 @@ import java.util.ArrayList;
 
 public class FileManager {
 
+    private Btree btree;
+    private int rrn;
     private File file;
     private AvailList aList;
     private Metadata metadata;
     private ArrayList<Record> records;
 
     public FileManager(File file) {
+        btree = new Btree(5);
+        rrn = 0;
         this.file = file;
         records = new ArrayList<>();
         metadata = new Metadata(new File(file.getPath() + ".metadata"));
         aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), file);
         if (!file.exists())
             touch();
+    }
+
+    public void loadTree() {
+        Record tempRecord;
+        FileIndex index;
+        RandomAccessFile raFile;
+        try {
+            raFile = new RandomAccessFile(file, "r");
+            try {
+                while (true) {
+                    tempRecord = parse(raFile.readUTF());
+                    if (tempRecord == null)
+                        continue;
+                    index = new FileIndex(tempRecord.getPK(), rrn);
+                    System.out.println(index);
+                    btree.insert(index.getId(), index);
+                    rrn++;
+                }
+            } catch (EOFException e) { }
+            raFile.close();
+        } catch (Exception e) {
+            System.out.println("Error! " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void writeFile() {
@@ -37,7 +67,7 @@ public class FileManager {
         records.clear();
     }
 
-    public void remove(int pos) {
+    public void remove(int pos, String pk) {
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file, "rw");
@@ -53,6 +83,7 @@ public class FileManager {
                 raFile.writeUTF(metadata.getDeleted(pos));
             }
             aList.add(pos);
+            btree.delete(pk);
             raFile.close();
         } catch (Exception e) {
             System.out.println("Error writing to file " + e.getMessage());
@@ -121,32 +152,7 @@ public class FileManager {
     }
 
     private boolean freePK(String pk) {
-        // TODO B-Tree
-        // revisar en archivo
-        Record tempRecord;
-        RandomAccessFile raFile;
-        try {
-            raFile = new RandomAccessFile(file, "r");
-            try {
-                while (true) {
-                    tempRecord = parse(raFile.readUTF());
-                    if (tempRecord == null)
-                        continue;
-                    if (tempRecord.getPK().equals(pk))
-                        return false;
-                }
-            } catch (EOFException e) { }
-
-            raFile.close();
-        } catch (Exception e) {
-            System.out.println("Error reading from file " + e.getMessage());
-            e.printStackTrace();
-        }
-        // revisar en registros en memoria
-        for (Record r : records)
-            if (r.getPK().equals(pk))
-                return false;
-        return true;
+        return btree.searchNode(pk) == null;
     }
 
     public void loadList(ListView list) {
@@ -169,21 +175,27 @@ public class FileManager {
     }
 
     public Object[] search(String pk) {
-        // TODO B-Tree
+        FileIndex nodo = btree.searchNode(pk);
+        if (nodo == null)
+            return null;
+
+        int pos = nodo.getRrn();
+        Record record;
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file, "r");
-            try {
-                Record record;
-                int pos = 0;
-                while (true) {
-                    record = parse(raFile.readUTF());
-                    if (record != null && record.getPK().equals(pk))
-                        return new Object[]{pos, record};
-                    pos++;
-                }
-            } catch (EOFException e) { }
-            raFile.close();
+            raFile.seek(metadata.getLength() * pos);
+            record = parse(raFile.readUTF());
+            if (record != null) {
+                raFile.close();
+                System.out.println(pos);
+                System.out.println(record);
+                return new Object[]{pos, record};
+            } else {
+                System.out.println("The streets are crazy dog");
+                raFile.close();
+                return null;
+            }
         } catch (Exception e) {
             System.out.println("Error! " + e.getMessage());
             e.printStackTrace();
@@ -192,6 +204,15 @@ public class FileManager {
     }
 
     public boolean addRecord(Record record) {
+//        record.setRrn(rrn);
+//        FileIndex index = new FileIndex(record.getPK(), rrn);
+//        if (freePK(index.getId())) {
+//            btree.insert(index.getId(), index);
+//            records.add(record);
+//            rrn++;
+//            return true;
+//        }
+//        return false;
         if (freePK(record.getPK())) {
             records.add(record);
             return true;
@@ -202,7 +223,6 @@ public class FileManager {
     public void setRecord(int pos, Record record) {
         rewrite(record, pos);
     }
-
 
     public void save() {
         metadata.writeMetadata();

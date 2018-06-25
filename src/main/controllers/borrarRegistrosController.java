@@ -2,6 +2,7 @@ package main.controllers;
 
 import javafx.scene.control.TextField;
 import main.Main;
+import main.classes.Record;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -21,7 +22,8 @@ public class borrarRegistrosController extends mainController {
         if (result == null) {
             showWarning("No existe ningun registro con esa llave primaria!");
         } else {
-            fileManager.remove((int)result[0]);
+            String temp = ((Record) result[1]).getPK();
+            fileManager.remove((int)result[0], temp);
             showSuccess("Operacion realizada con exito!");
         }
         txtCriteria.setText("");
