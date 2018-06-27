@@ -1,6 +1,8 @@
 package main.classes;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
@@ -8,10 +10,11 @@ public class Metadata {
 
     // Metadata file structure:
     // Number of fields
-    // size
-    // type
-    // name
-    // is primary key
+    // for every field:
+    //   size
+    //   type
+    //   name
+    //   is primary key
     // Pos of first deleted element
 
     private File file;
@@ -19,6 +22,7 @@ public class Metadata {
     private ArrayList<Field> fieldsData;
     private int length;
     private int firstDeleted;
+    private boolean loaded;
 
     public Metadata(File file) {
         this.file = file;
@@ -26,6 +30,7 @@ public class Metadata {
         fieldsData = new ArrayList<>();
         length = 3;
         firstDeleted = -1;
+        loaded = false;
         if (file.exists())
             loadMetadata();
     }
@@ -47,6 +52,7 @@ public class Metadata {
                 addField(new Field(tSize, tType, tName, tPrimaryKey));
             }
             firstDeleted = Integer.valueOf(raFile.readUTF().trim());
+            loaded = true;
             raFile.close();
         } catch (Exception e) {
             System.out.println("Error reading from file " + e.getMessage());
@@ -80,7 +86,10 @@ public class Metadata {
     }
 
     public void writeMetadata() {
-        // TODO truncate file
+        try {
+            new FileWriter(file);
+        } catch (IOException e) { }
+
         RandomAccessFile raFile;
         try {
             raFile = new RandomAccessFile(file, "rw");
@@ -188,6 +197,10 @@ public class Metadata {
 
     public boolean exists() {
         return file.exists();
+    }
+
+    public boolean isLoaded() {
+        return loaded;
     }
 
     public Field at(int pos) {

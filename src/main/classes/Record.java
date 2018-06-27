@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 public class Record {
 
-    // TODO no dejar al usuario hacer operaciones hasta que se ingrese una llave primaria
-
     private ArrayList<Field> fields;
 
     public Record() {
@@ -56,16 +54,16 @@ public class Record {
 
     @Override
     public String toString() {
-        // TODO cambiar el toString por algo mas legible
         StringBuilder result = new StringBuilder();
         String pkStr = "";
 
         for (Field field : fields)
-            if (field.primaryKey)
-                pkStr = field.toString();
-            else
-                result.append(field.toString());
-
+            if (field.primaryKey) {
+                pkStr = field.prettyString();
+            } else {
+                result.append(", ");
+                result.append(field.prettyString());
+            }
         return pkStr + result.toString();
     }
 

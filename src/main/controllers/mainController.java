@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 
 public class mainController implements Initializable {
 
-    // TODO confirmar si quiere guardar cambios todo antes de cerrar el programa
+    // TODO confirmarle al usuario si quiere guardar cada vez que realize una operacion
 
     protected FileManager fileManager;
     public Label statusBarLabel;
@@ -56,7 +56,6 @@ public class mainController implements Initializable {
         File opened = openFile();
         if (opened != null) {
             Main.setFileManager(new FileManager(opened));
-            // TODO hacer un metodo para cargar
             Main.getFileManager().loadTree();
             changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
         }
@@ -125,6 +124,8 @@ public class mainController implements Initializable {
     public void menuRegistrosAgregar() throws IOException {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (!fileManager.getMetadata().hasPK()) {
+            showWarning("No ha ingresado un campo de llave primaria!");
         } else {
             changeStage("../view/agregarRegistros.fxml", "Agregar Registros", 370, 482);
         }
@@ -133,6 +134,8 @@ public class mainController implements Initializable {
     public void menuRegistrosModificar() throws IOException {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (!fileManager.getMetadata().hasPK()) {
+            showWarning("No ha ingresado un campo de llave primaria!");
         } else if (fileManager.getRecords().size() > 0) {
             if (showConfirmation("Para realizar esta operacion tiene que guardar los cambios en el archivo, desea continuar?")) {
                 fileManager.save();
@@ -146,6 +149,8 @@ public class mainController implements Initializable {
     public void menuRegistrosBorrar() throws IOException {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (!fileManager.getMetadata().hasPK()) {
+            showWarning("No ha ingresado un campo de llave primaria!");
         } else {
             changeStage("../view/borrarRegistros.fxml", "Borrar Registros", 370, 482);
         }
@@ -154,6 +159,8 @@ public class mainController implements Initializable {
     public void menuRegistrosMostrar() throws IOException {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (!fileManager.getMetadata().hasPK()) {
+            showWarning("No ha ingresado un campo de llave primaria!");
         } else {
             changeStage("../view/mostrarRegistros.fxml", "Mostrar Registros", 370, 482);
         }
@@ -162,6 +169,8 @@ public class mainController implements Initializable {
     public void menuRegistrosCruzar() throws IOException {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (!fileManager.getMetadata().hasPK()) {
+            showWarning("No ha ingresado un campo de llave primaria!");
         } else {
             changeStage("../view/cruzarArchivos.fxml", "Cruzar Registros", 370, 482);
         }
@@ -170,6 +179,8 @@ public class mainController implements Initializable {
     public void menuRegistrosBuscar() throws IOException {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (!fileManager.getMetadata().hasPK()) {
+            showWarning("No ha ingresado un campo de llave primaria!");
         } else {
             changeStage("../view/buscarRegistros.fxml", "Buscar Registros", 370, 482);
         }
@@ -208,6 +219,13 @@ public class mainController implements Initializable {
             showWarning("No tiene ningun archivo abierto!");
         } else {
 //            generarPrueba();
+        }
+    }
+
+    public void close() {
+        if (fileManager != null && fileManager.getRecords().size() > 0
+                && showConfirmation("Desea guardar los cambios en el archivo?")) {
+            fileManager.save();
         }
     }
 

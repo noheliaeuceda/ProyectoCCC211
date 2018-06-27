@@ -1,10 +1,12 @@
 package main;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import main.controllers.mainController;
 import main.classes.FileManager;
 
 public class Main extends Application {
@@ -17,9 +19,18 @@ public class Main extends Application {
         setPrimaryStage(pStage);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/main.fxml"));
         Parent root = loader.load();
+
+        mainController controller = loader.getController();
+        primaryStage.setOnHidden(e -> close(controller));
+
         primaryStage.setTitle("Pantalla Principal");
         primaryStage.setScene(new Scene(root, 370, 442));
         primaryStage.show();
+    }
+
+    public void close(mainController controller){
+        controller.close();
+        Platform.exit();
     }
 
     public static Stage getPrimaryStage() {

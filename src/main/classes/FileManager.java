@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 public class FileManager {
 
+    // TODO se queda en un bucle infinito cuando buscamos las primeras llaves que se ingresan (ej: 3390000 y 11800000)
+
     private Btree btree;
     private int rrn;
     private File file;
@@ -26,6 +28,12 @@ public class FileManager {
         aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), file);
         if (!file.exists())
             touch();
+    }
+
+    public void reload() {
+        metadata.writeMetadata();
+        metadata = new Metadata(new File(file.getPath() + ".metadata"));
+        aList = new AvailList(metadata.getFirstDeleted(), metadata.getLength(), file);
     }
 
     public void loadTree() {
@@ -52,17 +60,24 @@ public class FileManager {
     }
 
     private void writeFile() {
-        for (Record record : records)
+        for (Record record : records) {
             if (aList.isEmpty()) {
                 append(record);
+                FileIndex index = new FileIndex(record.getPK(), rrn);
+                btree.insert(index.getId(), index);
+                rrn++;
             } else {
                 int pos = aList.remove();
                 rewrite(record, pos);
+                FileIndex index = new FileIndex(record.getPK(), pos);
+                btree.insert(index.getId(), index);
+
                 if (aList.isEmpty())
                     metadata.updateLastDeleted(-1);
                 else
                     metadata.updateLastDeleted(aList.first.pos);
             }
+        }
         records.clear();
     }
 
@@ -200,12 +215,8 @@ public class FileManager {
     }
 
     public boolean addRecord(Record record) {
-//        TODO guardar en el archivo cada vez que se realice una operacion, entonces no ocupariamos guardar en el arbol aqui
-//        TODO quitar variable rrn
         if (freePK(record.getPK())) {
-//            FileIndex index = new FileIndex(record.getPK(), rrn);
             records.add(record);
-//            btree.insert(index.getId(), index);
             return true;
         }
         return false;
@@ -281,8 +292,7 @@ public class FileManager {
                     record = parse(txtRecord);
                     if (record == null || !freePK(record.getPK()))
                         continue;
-                    if (txtRecord.charAt(0) != '*')
-                        mainFile.writeUTF(txtRecord);
+                    mainFile.writeUTF(txtRecord);
                 }
             } catch (EOFException e) { }
 

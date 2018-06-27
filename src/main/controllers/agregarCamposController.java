@@ -46,9 +46,7 @@ public class agregarCamposController extends mainController {
                 showWarning("Ya existe una llave primaria!");
             } else {
                 fileManager.getMetadata().addField(new Field(size, type, name, primaryKey));
-                // TODO hacer un metodo para cargar
-                fileManager.save();
-                Main.setFileManager(new FileManager(fileManager.getFile()));
+                fileManager.reload();
                 showSuccess("Campo agregado con exito!");
             }
         } catch (NumberFormatException e) {

@@ -50,6 +50,13 @@ public class Field {
                 && name.equals(other.name);
     }
 
+    public String prettyString() {
+        if (content == null)
+            return "Error";
+        else
+            return name + ": \"" + content + "\"";
+    }
+
     @Override
     public String toString() {
         if (content == null)
