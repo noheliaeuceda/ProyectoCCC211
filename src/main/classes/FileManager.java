@@ -12,6 +12,8 @@ public class FileManager {
 
     // TODO se queda en un bucle infinito cuando buscamos las primeras llaves que se ingresan (ej: 3390000 y 11800000)
 
+    private static final int MAX_RECORDS_SIZE = 20;
+
     private Btree btree;
     private int rrn;
     private File file;
@@ -51,8 +53,9 @@ public class FileManager {
                     btree.insert(index.getId(), index);
                     rrn++;
                 }
-            } catch (EOFException e) { }
-            raFile.close();
+            } catch (EOFException e) {
+                raFile.close();
+            }
         } catch (Exception e) {
             System.out.println("Error! " + e.getMessage());
             e.printStackTrace();
@@ -179,9 +182,9 @@ public class FileManager {
                     tempRecord = parse(raFile.readUTF());
                     list.getItems().add(tempRecord);
                 }
-            } catch (EOFException e) { }
-
-            raFile.close();
+            } catch (EOFException e) {
+                raFile.close();
+            }
         } catch (Exception e) {
             System.out.println("Error reading from file " + e.getMessage());
             e.printStackTrace();
@@ -215,11 +218,21 @@ public class FileManager {
     }
 
     public boolean addRecord(Record record) {
-        if (freePK(record.getPK())) {
-            records.add(record);
-            return true;
-        }
-        return false;
+        // revisar en el arbol
+        if (!freePK(record.getPK()))
+            return false;
+
+        // revisar en el buffer de registros
+        for (Record r : records)
+            if (record.getPK().equals(r.getPK()))
+                return false;
+
+        records.add(record);
+
+        // revisar si el buffer excedio el tamanio maximo
+        if (records.size() > MAX_RECORDS_SIZE)
+            writeFile();
+        return true;
     }
 
     public void setRecord(int pos, Record record) {
@@ -250,10 +263,45 @@ public class FileManager {
                     if (tempRecord != null)
                         bfWriter.write(tempRecord.toCSV());
                 }
-            } catch (EOFException e) { }
-
+            } catch (EOFException e) {
+                raFile.close();
+            }
             bfWriter.flush();
-            raFile.close();
+            fileWriter.close();
+            bfWriter.close();
+        } catch (Exception e) {
+            System.out.println("Error! " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean exportToXML() {
+        FileWriter fileWriter;
+        BufferedWriter bfWriter;
+        RandomAccessFile raFile;
+        String recordName = file.getName().split("\\.")[0];
+        File xmlFile = new File(recordName + ".xml");
+        try {
+            fileWriter = new FileWriter(xmlFile);
+            bfWriter = new BufferedWriter(fileWriter);
+            raFile = new RandomAccessFile(file, "r");
+            try {
+                String line;
+                Record tempRecord;
+                bfWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<" + recordName + ">\n");
+                while (true) {
+                    line = raFile.readUTF();
+                    tempRecord = parse(line);
+                    if (tempRecord != null)
+                        bfWriter.write(tempRecord.toXML(recordName.substring(0, recordName.length() - 1)));
+                }
+            } catch (EOFException e) {
+                raFile.close();
+            }
+            bfWriter.write("</" + recordName + ">");
+            bfWriter.flush();
             fileWriter.close();
             bfWriter.close();
         } catch (Exception e) {
@@ -283,7 +331,9 @@ public class FileManager {
                         continue;
                     mainFile.writeUTF(txtRecord);
                 }
-            } catch (EOFException e) { }
+            } catch (EOFException e) {
+                firstFile.close();
+            }
 
             // leer el segundo archivo
             try {
@@ -294,11 +344,11 @@ public class FileManager {
                         continue;
                     mainFile.writeUTF(txtRecord);
                 }
-            } catch (EOFException e) { }
+            } catch (EOFException e) {
+                secondFile.close();
+            }
 
             mainFile.close();
-            firstFile.close();
-            secondFile.close();
         } catch (Exception e) {
         }
     }

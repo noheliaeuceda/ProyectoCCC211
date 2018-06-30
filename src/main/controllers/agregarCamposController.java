@@ -4,7 +4,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import main.Main;
 import main.classes.Field;
-import main.classes.FileManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;

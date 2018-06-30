@@ -1,6 +1,7 @@
 package main.classes;
 
 import java.util.ArrayList;
+import java.util.Formatter;
 
 public class Record {
 
@@ -49,6 +50,20 @@ public class Record {
                 result.append(',');
         }
         result.append('\n');
+        return result.toString();
+    }
+
+    public String toXML(String recordName) {
+        StringBuilder result = new StringBuilder();
+        Formatter formatter = new Formatter(result);
+        formatter.format("\t<%s id=\"%s\">\n", recordName, getPK());
+        for (Field f : fields)
+            if (!f.primaryKey)
+                formatter.format("\t\t<%s>%s</%s>\n",
+                        f.name.replace(' ', '-'),
+                        f.getContent(),
+                        f.name.replace(' ', '-'));
+        formatter.format("\t</%s>\n", recordName);
         return result.toString();
     }
 

@@ -91,7 +91,7 @@ public class agregarRegistrosController extends mainController {
             else
                 showWarning("Ya existe una llave primaria con el valor que ingreso!");
         } else {
-            showWarning("Por favor no deje campos en blanco o ingrese asteriscos al inicio de un campo!");
+            showWarning("Por favor respete el formato de los campos!");
         }
 
         for (TextField textField : textFields)

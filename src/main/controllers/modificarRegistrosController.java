@@ -16,8 +16,6 @@ import java.util.ResourceBundle;
 
 public class modificarRegistrosController extends mainController {
 
-    // TODO (?) ver si se puede modificar la llave primaria
-
     public VBox vboxMain;
     public TextField txtPK;
     private TextField txtModPK;
@@ -117,7 +115,7 @@ public class modificarRegistrosController extends mainController {
             fileManager.setRecord(modifiedPos, record);
             showSuccess("Registro agregado con exito!");
         } else {
-            showWarning("Por favor no deje campos en blanco o ingrese asteriscos al inicio de un campo!");
+            showWarning("Por favor respete el formato de los campos!");
         }
 
         vboxMain.setDisable(true);

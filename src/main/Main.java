@@ -28,7 +28,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public void close(mainController controller){
+    private void close(mainController controller){
         controller.close();
         Platform.exit();
     }

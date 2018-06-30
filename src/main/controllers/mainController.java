@@ -4,7 +4,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
-import main.classes.Field;
 import main.classes.FileManager;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,7 +12,6 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import main.Main;
-import main.classes.Record;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +20,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class mainController implements Initializable {
-
-    // TODO confirmarle al usuario si quiere guardar cada vez que realize una operacion
 
     protected FileManager fileManager;
     public Label statusBarLabel;
@@ -57,6 +53,7 @@ public class mainController implements Initializable {
         if (opened != null) {
             Main.setFileManager(new FileManager(opened));
             Main.getFileManager().loadTree();
+            showSuccess("Archivo abierto con exito!");
             changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
         }
     }
@@ -151,6 +148,11 @@ public class mainController implements Initializable {
             showWarning("No tiene ningun archivo abierto!");
         } else if (!fileManager.getMetadata().hasPK()) {
             showWarning("No ha ingresado un campo de llave primaria!");
+        } else if (fileManager.getRecords().size() > 0) {
+            if (showConfirmation("Para realizar esta operacion tiene que guardar los cambios en el archivo, desea continuar?")) {
+                fileManager.save();
+                changeStage("../view/borrarRegistros.fxml", "Borrar Registros", 370, 482);
+            }
         } else {
             changeStage("../view/borrarRegistros.fxml", "Borrar Registros", 370, 482);
         }
@@ -161,6 +163,11 @@ public class mainController implements Initializable {
             showWarning("No tiene ningun archivo abierto!");
         } else if (!fileManager.getMetadata().hasPK()) {
             showWarning("No ha ingresado un campo de llave primaria!");
+        } else if (fileManager.getRecords().size() > 0) {
+            if (showConfirmation("Para realizar esta operacion tiene que guardar los cambios en el archivo, desea continuar?")) {
+                fileManager.save();
+                changeStage("../view/mostrarRegistros.fxml", "Mostrar Registros", 370, 482);
+            }
         } else {
             changeStage("../view/mostrarRegistros.fxml", "Mostrar Registros", 370, 482);
         }
@@ -171,6 +178,11 @@ public class mainController implements Initializable {
             showWarning("No tiene ningun archivo abierto!");
         } else if (!fileManager.getMetadata().hasPK()) {
             showWarning("No ha ingresado un campo de llave primaria!");
+        } else if (fileManager.getRecords().size() > 0) {
+            if (showConfirmation("Para realizar esta operacion tiene que guardar los cambios en el archivo, desea continuar?")) {
+                fileManager.save();
+                changeStage("../view/cruzarArchivos.fxml", "Cruzar Registros", 370, 482);
+            }
         } else {
             changeStage("../view/cruzarArchivos.fxml", "Cruzar Registros", 370, 482);
         }
@@ -181,6 +193,11 @@ public class mainController implements Initializable {
             showWarning("No tiene ningun archivo abierto!");
         } else if (!fileManager.getMetadata().hasPK()) {
             showWarning("No ha ingresado un campo de llave primaria!");
+        } else if (fileManager.getRecords().size() > 0) {
+            if (showConfirmation("Para realizar esta operacion tiene que guardar los cambios en el archivo, desea continuar?")) {
+                fileManager.save();
+                changeStage("../view/buscarRegistros.fxml", "Buscar Registros", 370, 482);
+            }
         } else {
             changeStage("../view/buscarRegistros.fxml", "Buscar Registros", 370, 482);
         }
@@ -207,22 +224,43 @@ public class mainController implements Initializable {
     public void menuEstandarizacionExcel() {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
-        } else if (fileManager.exportToCSV()) {
-            showSuccess("Archivo de Excel guardado con exito!");
+        } else if (fileManager.getRecords().size() > 0) {
+            if (showConfirmation("Para realizar esta operacion tiene que guardar los cambios en el archivo, desea continuar?")) {
+                fileManager.save();
+                if (fileManager.exportToCSV())
+                    showSuccess("Archivo de Excel guardado con exito!");
+                else
+                    showWarning("Hubo un error al crear el archivo!");
+            }
         } else {
-            showWarning("Hubo un error al crear el archivo!");
+            if (fileManager.exportToCSV())
+                showSuccess("Archivo de Excel guardado con exito!");
+            else
+                showWarning("Hubo un error al crear el archivo!");
         }
     }
 
     public void menuEstandarizacionXML() {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
+        } else if (fileManager.getRecords().size() > 0) {
+            if (showConfirmation("Para realizar esta operacion tiene que guardar los cambios en el archivo, desea continuar?")) {
+                fileManager.save();
+                if (fileManager.exportToXML())
+                    showSuccess("Archivo de XML guardado con exito!");
+                else
+                    showWarning("Hubo un error al crear el archivo!");
+            }
         } else {
-//            generarPrueba();
+            if (fileManager.exportToXML())
+                showSuccess("Archivo de XML guardado con exito!");
+            else
+                showWarning("Hubo un error al crear el archivo!");
         }
     }
 
     public void close() {
+        fileManager = Main.getFileManager();
         if (fileManager != null && fileManager.getRecords().size() > 0
                 && showConfirmation("Desea guardar los cambios en el archivo?")) {
             fileManager.save();
@@ -276,32 +314,6 @@ public class mainController implements Initializable {
         // directorio inicial, lo seteamos al directorio del proyecto
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         return fileChooser.showOpenDialog(Main.getPrimaryStage());
-    }
-
-    public void generarPrueba() {
-        try {
-            Record tempRecord;
-            int numero = 11800000;
-            String nombre = "Nombre #";
-            String apellido = "Apellido #";
-            int clases = 0;
-            float pagos = 0.15f;
-            for (int i = 0; i < 10000; i++) {
-                tempRecord = new Record();
-                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(0), Integer.toString(numero + i)));
-                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(1), nombre));
-                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(2), apellido + i));
-                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(3), Integer.toString(clases)));
-                tempRecord.add(new Field(fileManager.getMetadata().getFieldsData().get(4), Float.toString(pagos)));
-                if (clases > 75)
-                    clases = 0;
-                if (pagos > 500000)
-                    pagos = 0.13f;
-                clases++;
-                pagos += 1234.37;
-                fileManager.addRecord(tempRecord);
-            }
-        } catch (Exception e) { }
     }
 
 }
