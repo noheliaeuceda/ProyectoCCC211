@@ -38,6 +38,7 @@ public class Btree {
     public void insert(Comparable elem, FileIndex ind) {
         if (root == null) {
             root = new Node(order, elem, null, null, ind);
+            ls.add(ind);
             return;
         }
         LinkedStack fathers = new LinkedStack();
