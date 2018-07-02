@@ -216,8 +216,8 @@ public class mainController implements Initializable {
         if (fileManager == null) {
             showWarning("No tiene ningun archivo abierto!");
         } else {
-            fileManager.loadTree();
-            showSuccess("Se ha indexado en el arbol!");
+            fileManager.getBtree().print();
+            showSuccess("Se mostrara el arbol en la consola!");
         }
     }
 

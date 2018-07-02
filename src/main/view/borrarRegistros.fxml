@@ -42,7 +42,7 @@
                 <Menu mnemonicParsing="false" text="Indices">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#menuIndicesCrear" text="Crear" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuIndicesReindexar" text="Re-indexar" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuIndicesReindexar" text="Mostrar arbol" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Estandarización">

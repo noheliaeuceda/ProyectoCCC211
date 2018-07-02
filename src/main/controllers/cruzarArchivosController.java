@@ -54,6 +54,7 @@ public class cruzarArchivosController extends  mainController {
                 showWarning("Ya existe un archivo con el nombre que ingreso!");
             } else {
                 result.merge(fileManager, otherFM);
+                result.loadTree();
                 Main.setFileManager(result);
                 changeStage("../view/main.fxml", "Pantalla Principal", 370, 442);
             }

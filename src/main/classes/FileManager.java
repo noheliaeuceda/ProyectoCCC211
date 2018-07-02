@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 public class FileManager {
 
-    // TODO se queda en un bucle infinito cuando buscamos las primeras llaves que se ingresan (ej: 3390000 y 11800000)
-
     private static final int MAX_RECORDS_SIZE = 20;
 
     private Btree btree;
@@ -100,11 +98,10 @@ public class FileManager {
                 raFile.writeUTF(metadata.getDeleted(pos));
             }
             aList.add(pos);
+//            TODO bug
             btree.delete(pk);
             raFile.close();
         } catch (Exception e) {
-            System.out.println("Error writing to file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -381,6 +378,10 @@ public class FileManager {
 
     public Metadata getMetadata() {
         return metadata;
+    }
+
+    public Btree getBtree() {
+        return btree;
     }
 
 }
