@@ -80,8 +80,6 @@ public class agregarRegistrosController extends mainController {
             try {
                 record.add(new Field(field, text));
             } catch (LongLengthException e) {
-                System.out.println("Something went terribly wrong! " + e.getMessage());
-                e.printStackTrace();
             }
         }
 

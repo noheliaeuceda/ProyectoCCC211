@@ -2,6 +2,7 @@ package main.controllers;
 
 import javafx.scene.control.TextField;
 import main.Main;
+import main.classes.FileManager;
 import main.classes.Record;
 
 import java.net.URL;
@@ -24,6 +25,9 @@ public class borrarRegistrosController extends mainController {
         } else {
             String temp = ((Record) result[1]).getPK();
             fileManager.remove((int)result[0], temp);
+//            plan b:
+//            fileManager = new FileManager(fileManager.getFile());
+//            fileManager.loadTree();
             showSuccess("Operacion realizada con exito!");
         }
         txtCriteria.setText("");

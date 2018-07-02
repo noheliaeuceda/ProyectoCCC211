@@ -55,8 +55,6 @@ public class FileManager {
                 raFile.close();
             }
         } catch (Exception e) {
-            System.out.println("Error! " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -98,7 +96,6 @@ public class FileManager {
                 raFile.writeUTF(metadata.getDeleted(pos));
             }
             aList.add(pos);
-//            TODO bug
             btree.delete(pk);
             raFile.close();
         } catch (Exception e) {
@@ -123,7 +120,6 @@ public class FileManager {
             }
             return tempRecord;
         } catch (LongLengthException e) {
-            System.out.println("Error creating record! " + e.getMessage());
             return null;
         }
     }
@@ -136,8 +132,6 @@ public class FileManager {
             raFile.writeUTF(record.prettyString() + '\n');
             raFile.close();
         } catch (Exception e) {
-            System.out.println("Error writing to file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -149,8 +143,6 @@ public class FileManager {
             raFile.writeUTF(record.prettyString() + '\n');
             raFile.close();
         } catch (Exception e) {
-            System.out.println("Error writing to file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -160,8 +152,6 @@ public class FileManager {
             raFile = new RandomAccessFile(file, "rw");
             raFile.close();
         } catch (Exception e) {
-            System.out.println("Error with file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -183,8 +173,6 @@ public class FileManager {
                 raFile.close();
             }
         } catch (Exception e) {
-            System.out.println("Error reading from file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -208,8 +196,6 @@ public class FileManager {
                 return null;
             }
         } catch (Exception e) {
-            System.out.println("Error! " + e.getMessage());
-            e.printStackTrace();
         }
         return null;
     }
@@ -267,8 +253,6 @@ public class FileManager {
             fileWriter.close();
             bfWriter.close();
         } catch (Exception e) {
-            System.out.println("Error! " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
         return true;
@@ -302,8 +286,6 @@ public class FileManager {
             fileWriter.close();
             bfWriter.close();
         } catch (Exception e) {
-            System.out.println("Error! " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
         return true;

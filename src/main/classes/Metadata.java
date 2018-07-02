@@ -52,8 +52,6 @@ public class Metadata {
             loaded = true;
             raFile.close();
         } catch (Exception e) {
-            System.out.println("Error reading from file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -77,8 +75,6 @@ public class Metadata {
             mainFile.close();
             other.writeMetadata();
         } catch (Exception e) {
-            System.out.println("Error reading from file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -101,8 +97,6 @@ public class Metadata {
             raFile.writeUTF("-1");
             raFile.close();
         } catch (Exception e) {
-            System.out.println("Error writing to file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -121,8 +115,6 @@ public class Metadata {
             raFile.writeUTF(Integer.toString(head));
             raFile.close();
         } catch (Exception e) {
-            System.out.println("Error reading from file " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
