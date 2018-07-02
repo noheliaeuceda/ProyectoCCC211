@@ -109,6 +109,7 @@ public class Btree {
         }
         LinkedStack ancestors = new LinkedStack();
         Node curr = root;
+        Node temp= root;
         int currPos;
         for (;;) {
             currPos = curr.searchInNode(elem);
@@ -122,17 +123,17 @@ public class Btree {
                 curr = curr.getChilds()[currPos];
             }
         }
+        root = temp;
         if (curr.isLeaf()) {
             curr.removeFromNode(currPos, currPos);
             if (underflowed(curr)) {
                 restock(curr, ancestors);
+                root = temp;
             }
         } else {
             Node leftmostNode = findLeftmostNode(curr.getChilds()[currPos + 1], ancestors);
             Comparable nextElem = leftmostNode.getElems()[0];
             leftmostNode.removeFromNode(0, 0);
-            Node temp = root;
-            System.out.println(temp);
             curr.getElems()[currPos] = nextElem;
             if (underflowed(leftmostNode)) {
                 restock(leftmostNode, ancestors);
